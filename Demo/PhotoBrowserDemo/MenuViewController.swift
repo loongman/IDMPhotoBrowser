@@ -30,23 +30,23 @@ extension MenuViewController {
 
 extension MenuViewController {
 	func setupTableViewFooterView() {
-		let tableViewFooter: UIView = UIView(frame: CGRect.init(x: 0, y: 0, width: 320, height: 426 * 0.9 + 40))
+		let tableViewFooter: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 426 * 0.9 + 40))
 		
 		let buttonWithImageOnScreen1 = UIButton(type: .custom)
-		buttonWithImageOnScreen1.frame = CGRect.init(x: 15, y: 0, width: 640/3 * 0.9, height: 426/2 * 0.9)
+		buttonWithImageOnScreen1.frame = CGRect(x: 15, y: 0, width: 640/3 * 0.9, height: 426/2 * 0.9)
 		buttonWithImageOnScreen1.tag = 101
 		buttonWithImageOnScreen1.adjustsImageWhenHighlighted = false
-		buttonWithImageOnScreen1.setImage(UIImage.init(named: "photo1m.jpg"), for: .normal)
+		buttonWithImageOnScreen1.setImage(UIImage(named: "photo1m.jpg"), for: .normal)
 		buttonWithImageOnScreen1.imageView?.contentMode = .scaleAspectFill
 		buttonWithImageOnScreen1.backgroundColor = UIColor.black
 		buttonWithImageOnScreen1.addTarget(self, action: #selector(buttonWithImageOnScreenPressed(sender:)), for: .touchUpInside)
 		tableViewFooter.addSubview(buttonWithImageOnScreen1)
 		
 		let buttonWithImageOnScreen2 = UIButton(type: .custom)
-		buttonWithImageOnScreen2.frame = CGRect.init(x: 15, y: 426/2 * 0.9 + 20, width: 640/3 * 0.9, height: 426/2 * 0.9)
+		buttonWithImageOnScreen2.frame = CGRect(x: 15, y: 426/2 * 0.9 + 20, width: 640/3 * 0.9, height: 426/2 * 0.9)
 		buttonWithImageOnScreen2.tag = 102
 		buttonWithImageOnScreen2.adjustsImageWhenHighlighted = false
-		buttonWithImageOnScreen2.setImage(UIImage.init(named: "photo3m.jpg"), for: .normal)
+		buttonWithImageOnScreen2.setImage(UIImage(named: "photo3m.jpg"), for: .normal)
 		buttonWithImageOnScreen2.imageView?.contentMode = .scaleAspectFill
 		buttonWithImageOnScreen2.backgroundColor = UIColor.black
 		buttonWithImageOnScreen2.addTarget(self, action: #selector(buttonWithImageOnScreenPressed(sender:)), for: .touchUpInside)
@@ -59,7 +59,7 @@ extension MenuViewController {
 // MARK: Actions
 
 extension MenuViewController {
-	func buttonWithImageOnScreenPressed(sender: AnyObject) {
+    @objc func buttonWithImageOnScreenPressed(sender: AnyObject) {
 		let buttonSender = sender as? UIButton
 		
 		// Create an array to store IDMPhoto objects
@@ -68,29 +68,29 @@ extension MenuViewController {
 		var photo: IDMPhoto
 		
 		if buttonSender?.tag == 101 {
-			let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")]
+			let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")!]
 			photo = IDMPhoto.photos(withFilePaths:path_photo1l).first as! IDMPhoto
 			photo.caption = "Grotto of the Madonna"
 			photos.append(photo)
 		}
 		
-		let path_photo3l = [Bundle.main.path(forResource: "photo3l", ofType: "jpg")]
+		let path_photo3l = [Bundle.main.path(forResource: "photo3l", ofType: "jpg")!]
 		photo = IDMPhoto.photos(withFilePaths:path_photo3l).first as! IDMPhoto
 		photo.caption = "York Floods"
 		photos.append(photo)
 		
-		let path_photo2l = [Bundle.main.path(forResource: "photo2l", ofType: "jpg")]
+		let path_photo2l = [Bundle.main.path(forResource: "photo2l", ofType: "jpg")!]
 		photo = IDMPhoto.photos(withFilePaths:path_photo2l).first as! IDMPhoto
 		photo.caption = "The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England."
 		photos.append(photo)
 		
-		let path_photo4l = [Bundle.main.path(forResource: "photo4l", ofType: "jpg")]
+		let path_photo4l = [Bundle.main.path(forResource: "photo4l", ofType: "jpg")!]
 		photo = IDMPhoto.photos(withFilePaths:path_photo4l).first as! IDMPhoto
 		photo.caption = "Campervan";
 		photos.append(photo)
 		
 		if buttonSender?.tag == 102 {
-			let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")]
+			let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")!]
 			photo = IDMPhoto.photos(withFilePaths:path_photo1l).first as! IDMPhoto
 			photo.caption = "Grotto of the Madonna";
 			photos.append(photo)
@@ -149,7 +149,7 @@ extension MenuViewController {
 		let cellIdentifier = "Cell";
 		var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
 		if cell == nil {
-			cell = UITableViewCell.init(style: .default, reuseIdentifier: cellIdentifier)
+			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
 		}
 		
 		// Configure
@@ -184,7 +184,7 @@ extension MenuViewController {
 		var photo: IDMPhoto
 		
 		if indexPath.section == 0 { // Local photo
-			let path_photo2l = [Bundle.main.path(forResource: "photo2l", ofType: "jpg")]
+			let path_photo2l = [Bundle.main.path(forResource: "photo2l", ofType: "jpg")!]
 			photo = IDMPhoto.photos(withFilePaths:path_photo2l).first as! IDMPhoto
 			photo.caption = "The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England."
 			photos.append(photo)
@@ -192,30 +192,30 @@ extension MenuViewController {
 		else if indexPath.section == 1 { // Multiple photos
 			if indexPath.row == 0 { // Local Photos
 				
-				let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")]
+				let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")!]
 				photo = IDMPhoto.photos(withFilePaths:path_photo1l).first as! IDMPhoto
 				photo.caption = "Grotto of the Madonna"
 				photos.append(photo)
 				
-				let path_photo2l = [Bundle.main.path(forResource: "photo2l", ofType: "jpg")]
+				let path_photo2l = [Bundle.main.path(forResource: "photo2l", ofType: "jpg")!]
 				photo = IDMPhoto.photos(withFilePaths:path_photo2l).first as! IDMPhoto
 				photo.caption = "The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England."
 				photos.append(photo)
 				
-				let path_photo3l = [Bundle.main.path(forResource: "photo3l", ofType: "jpg")]
+				let path_photo3l = [Bundle.main.path(forResource: "photo3l", ofType: "jpg")!]
 				photo = IDMPhoto.photos(withFilePaths:path_photo3l).first as! IDMPhoto
 				photo.caption = "York Floods"
 				photos.append(photo)
 				
-				let path_photo4l = [Bundle.main.path(forResource: "photo4l", ofType: "jpg")]
+				let path_photo4l = [Bundle.main.path(forResource: "photo4l", ofType: "jpg")!]
 				photo = IDMPhoto.photos(withFilePaths:path_photo4l).first as! IDMPhoto
 				photo.caption = "Campervan";
 				photos.append(photo)
 			} else if indexPath.row == 1 || indexPath.row == 2 { // Photos from Flickr or Flickr - Custom
-				let photosWithURLArray = [NSURL.init(string: "http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"),
-				                          NSURL.init(string: "http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"),
-				                          NSURL.init(string: "http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"),
-				                          NSURL.init(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")]
+				let photosWithURLArray = [NSURL(string: "http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg")!,
+				                          NSURL(string: "http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg")!,
+				                          NSURL(string: "http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg")!,
+				                          NSURL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!]
 				let photosWithURL: [IDMPhoto] = IDMPhoto.photos(withURLs: photosWithURLArray) as! [IDMPhoto]
 				
 				photos = photosWithURL
@@ -223,7 +223,7 @@ extension MenuViewController {
 		}
 
 		// Create and setup browser
-		let browser = IDMPhotoBrowser.init(photos: photos)
+		let browser = IDMPhotoBrowser(photos: photos)
 		browser?.delegate = self
 
 		if indexPath.section == 1 { // Multiple photos
@@ -234,14 +234,14 @@ extension MenuViewController {
 				browser?.actionButtonTitles      = ["Option 1", "Option 2", "Option 3", "Option 4"]
 				browser?.displayCounterLabel     = true
 				browser?.useWhiteBackgroundColor = true
-				browser?.leftArrowImage          = UIImage.init(named: "IDMPhotoBrowser_customArrowLeft.png")
-				browser?.rightArrowImage         = UIImage.init(named: "IDMPhotoBrowser_customArrowRight.png")
-				browser?.leftArrowSelectedImage  = UIImage.init(named: "IDMPhotoBrowser_customArrowLeftSelected.png")
-				browser?.rightArrowSelectedImage = UIImage.init(named: "IDMPhotoBrowser_customArrowRightSelected.png")
-				browser?.doneButtonImage         = UIImage.init(named: "IDMPhotoBrowser_customDoneButton.png")
+				browser?.leftArrowImage          = UIImage(named: "IDMPhotoBrowser_customArrowLeft.png")
+				browser?.rightArrowImage         = UIImage(named: "IDMPhotoBrowser_customArrowRight.png")
+				browser?.leftArrowSelectedImage  = UIImage(named: "IDMPhotoBrowser_customArrowLeftSelected.png")
+				browser?.rightArrowSelectedImage = UIImage(named: "IDMPhotoBrowser_customArrowRightSelected.png")
+				browser?.doneButtonImage         = UIImage(named: "IDMPhotoBrowser_customDoneButton.png")
 				browser?.view.tintColor          = UIColor.orange
 				browser?.progressTintColor       = UIColor.orange
-				browser?.trackTintColor          = UIColor.init(white: 0.8, alpha: 1)
+                browser?.trackTintColor          = UIColor(white: 0.8, alpha: 1)
 			}
 		}
 		
@@ -257,22 +257,22 @@ extension MenuViewController {
 extension MenuViewController {
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didShowPhotoAt index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
-		print("Did show photoBrowser with photo index: \(index), photo caption: \(photo.caption)")
+		print("Did show photoBrowser with photo index: \(index), photo caption: \(photo.caption!)")
 	}
 	
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, willDismissAtPageIndex index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
-		print("Will dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption)")
+		print("Will dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption!)")
 	}
 	
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didDismissAtPageIndex index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
-		print("Did dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption)")
+		print("Did dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption!)")
 	}
 	
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didDismissActionSheetWithButtonIndex buttonIndex: UInt, photoIndex: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: buttonIndex) as! IDMPhoto
-		print("Did dismiss photoBrowser with photo index: \(buttonIndex), photo caption: \(photo.caption)")
+		print("Did dismiss photoBrowser with photo index: \(buttonIndex), photo caption: \(photo.caption!)")
 		
 		UIAlertView(title: "Option \(buttonIndex+1)", message: nil, delegate: nil, cancelButtonTitle: "OK").show()
 	}

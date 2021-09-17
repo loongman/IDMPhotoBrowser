@@ -35,26 +35,26 @@
 		D157496E178DB94900B0211A /* IDMZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157495B178DB94900B0211A /* IDMZoomingScrollView.m */; };
 		D1574971178DB95300B0211A /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = D157496F178DB95300B0211A /* README.markdown */; };
 		D1574972178DB95300B0211A /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = D1574970178DB95300B0211A /* LICENSE.txt */; };
-		D172B9391DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B92F1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft.png */; };
-		D172B93A1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9301DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft@2x.png */; };
-		D172B93B1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9311DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected.png */; };
-		D172B93C1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9321DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png */; };
-		D172B93D1DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9331DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight.png */; };
-		D172B93E1DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9341DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight@2x.png */; };
-		D172B93F1DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9351DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected.png */; };
-		D172B9401DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9361DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected@2x.png */; };
-		D172B9411DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9371DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton.png */; };
-		D172B9421DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D172B9381DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton@2x.png */; };
 		D17F79ED1AB7C29600A65B37 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D17F79EC1AB7C29600A65B37 /* Images.xcassets */; };
 		D1890F7217C66CA70065C101 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1890F7117C66CA70065C101 /* ImageIO.framework */; };
 		D1A193581758F37B00CE615F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A193561758F37B00CE615F /* libz.1.2.5.dylib */; };
 		D1A193591758F37B00CE615F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A193571758F37B00CE615F /* libz.dylib */; };
 		D1A1935B1758F42300CE615F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1935A1758F42300CE615F /* SystemConfiguration.framework */; };
-		D1A1935D1758F42A00CE615F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1935C1758F42A00CE615F /* MobileCoreServices.framework */; };
 		D1A9ED521DEB684B00C238DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A9ED511DEB684B00C238DA /* AppDelegate.swift */; };
 		D1A9ED541DEB685F00C238DA /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A9ED531DEB685F00C238DA /* MenuViewController.swift */; };
 		D1B43D551721876000D8B807 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1B43D541721875F00D8B807 /* QuartzCore.framework */; };
 		D1FA3A911805C340000FFE18 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1FA3A901805C340000FFE18 /* Security.framework */; };
+		F288179C26F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179226F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected@2x.png */; };
+		F288179D26F47B0B00670017 /* IDMPhotoBrowser_customDoneButton.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179326F47B0B00670017 /* IDMPhotoBrowser_customDoneButton.png */; };
+		F288179E26F47B0B00670017 /* IDMPhotoBrowser_customArrowRight.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179426F47B0B00670017 /* IDMPhotoBrowser_customArrowRight.png */; };
+		F288179F26F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179526F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft.png */; };
+		F28817A026F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179626F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft@2x.png */; };
+		F28817A126F47B0B00670017 /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179726F47B0B00670017 /* IDMPhotoBrowser_customArrowRight@2x.png */; };
+		F28817A226F47B0B00670017 /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179826F47B0B00670017 /* IDMPhotoBrowser_customDoneButton@2x.png */; };
+		F28817A326F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179926F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png */; };
+		F28817A426F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179A26F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected.png */; };
+		F28817A526F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = F288179B26F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected.png */; };
+		F28817A726F47BCD00670017 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28817A626F47BCD00670017 /* CoreServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,7 +92,6 @@
 		7D2B79BF1FD25B7600F2094F /* PhotoBrowserDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoBrowserDemoTests.m; sourceTree = "<group>"; };
 		7D2B79C11FD25B7600F2094F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7D2B79C71FD25BF300F2094F /* IDMUtilsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IDMUtilsTest.m; sourceTree = "<group>"; };
-		7D7D66691E09D6D400410A67 /* IDMBrowserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMBrowserDelegate.h; sourceTree = "<group>"; };
 		7D7D666A1E09D6DA00410A67 /* IDMPhotoDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPhotoDataSource.h; sourceTree = "<group>"; };
 		D00FA320EEACA8C835D9D626 /* Pods-PhotoBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
@@ -113,16 +112,6 @@
 		D157495B178DB94900B0211A /* IDMZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMZoomingScrollView.m; sourceTree = "<group>"; };
 		D157496F178DB95300B0211A /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.markdown; path = ../../README.markdown; sourceTree = "<group>"; };
 		D1574970178DB95300B0211A /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../LICENSE.txt; sourceTree = "<group>"; };
-		D172B92F1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IDMPhotoBrowser_customArrowLeft.png; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowLeft.png"; sourceTree = SOURCE_ROOT; };
-		D172B9301DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IDMPhotoBrowser_customArrowLeft@2x.png"; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowLeft@2x.png"; sourceTree = SOURCE_ROOT; };
-		D172B9311DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IDMPhotoBrowser_customArrowLeftSelected.png; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowLeftSelected.png"; sourceTree = SOURCE_ROOT; };
-		D172B9321DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IDMPhotoBrowser_customArrowLeftSelected@2x.png"; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowLeftSelected@2x.png"; sourceTree = SOURCE_ROOT; };
-		D172B9331DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IDMPhotoBrowser_customArrowRight.png; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowRight.png"; sourceTree = SOURCE_ROOT; };
-		D172B9341DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IDMPhotoBrowser_customArrowRight@2x.png"; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowRight@2x.png"; sourceTree = SOURCE_ROOT; };
-		D172B9351DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IDMPhotoBrowser_customArrowRightSelected.png; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowRightSelected.png"; sourceTree = SOURCE_ROOT; };
-		D172B9361DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IDMPhotoBrowser_customArrowRightSelected@2x.png"; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customArrowRightSelected@2x.png"; sourceTree = SOURCE_ROOT; };
-		D172B9371DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IDMPhotoBrowser_customDoneButton.png; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customDoneButton.png"; sourceTree = SOURCE_ROOT; };
-		D172B9381DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IDMPhotoBrowser_customDoneButton@2x.png"; path = "PhotoBrowserDemo/Custom Images/IDMPhotoBrowser_customDoneButton@2x.png"; sourceTree = SOURCE_ROOT; };
 		D17F79EC1AB7C29600A65B37 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D1890F7117C66CA70065C101 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		D1A193561758F37B00CE615F /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
@@ -135,6 +124,17 @@
 		D1B43D541721875F00D8B807 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D1FA3A901805C340000FFE18 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		DEF1811E2E5676DB0ECAA3AE /* Pods-PhotoBrowserDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.release.xcconfig"; sourceTree = "<group>"; };
+		F288179226F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowRightSelected@2x.png"; sourceTree = "<group>"; };
+		F288179326F47B0B00670017 /* IDMPhotoBrowser_customDoneButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customDoneButton.png; sourceTree = "<group>"; };
+		F288179426F47B0B00670017 /* IDMPhotoBrowser_customArrowRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customArrowRight.png; sourceTree = "<group>"; };
+		F288179526F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customArrowLeft.png; sourceTree = "<group>"; };
+		F288179626F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowLeft@2x.png"; sourceTree = "<group>"; };
+		F288179726F47B0B00670017 /* IDMPhotoBrowser_customArrowRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowRight@2x.png"; sourceTree = "<group>"; };
+		F288179826F47B0B00670017 /* IDMPhotoBrowser_customDoneButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customDoneButton@2x.png"; sourceTree = "<group>"; };
+		F288179926F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowLeftSelected@2x.png"; sourceTree = "<group>"; };
+		F288179A26F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customArrowLeftSelected.png; sourceTree = "<group>"; };
+		F288179B26F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customArrowRightSelected.png; sourceTree = "<group>"; };
+		F28817A626F47BCD00670017 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,7 +144,6 @@
 			files = (
 				D1FA3A911805C340000FFE18 /* Security.framework in Frameworks */,
 				D1890F7217C66CA70065C101 /* ImageIO.framework in Frameworks */,
-				D1A1935D1758F42A00CE615F /* MobileCoreServices.framework in Frameworks */,
 				D1A1935B1758F42300CE615F /* SystemConfiguration.framework in Frameworks */,
 				D1A193581758F37B00CE615F /* libz.1.2.5.dylib in Frameworks */,
 				D1A193591758F37B00CE615F /* libz.dylib in Frameworks */,
@@ -153,6 +152,7 @@
 				4C6F979214AF734900F8389A /* UIKit.framework in Frameworks */,
 				4C6F979414AF734900F8389A /* Foundation.framework in Frameworks */,
 				4C6F979614AF734900F8389A /* CoreGraphics.framework in Frameworks */,
+				F28817A726F47BCD00670017 /* CoreServices.framework in Frameworks */,
 				5736E0DD544CC84515494E76 /* libPods-PhotoBrowserDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -173,7 +173,7 @@
 				D1574931178DB94900B0211A /* IDMPhotoBrowser */,
 				4C6F979714AF734900F8389A /* Demo */,
 				4C6F97CA14AF75D300F8389A /* Sample Photos */,
-				D19D825517E8D40700A5859E /* Custom Images */,
+				F288179126F47B0B00670017 /* Custom Images */,
 				4C6F979814AF734900F8389A /* Supporting Files */,
 				7D2B79BE1FD25B7600F2094F /* PhotoBrowserDemoTests */,
 				4C6F979014AF734900F8389A /* Frameworks */,
@@ -194,6 +194,7 @@
 		4C6F979014AF734900F8389A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F28817A626F47BCD00670017 /* CoreServices.framework */,
 				D1A193561758F37B00CE615F /* libz.1.2.5.dylib */,
 				D1A193571758F37B00CE615F /* libz.dylib */,
 				4C6F979514AF734900F8389A /* CoreGraphics.framework */,
@@ -298,22 +299,22 @@
 			path = ../Classes;
 			sourceTree = "<group>";
 		};
-		D19D825517E8D40700A5859E /* Custom Images */ = {
+		F288179126F47B0B00670017 /* Custom Images */ = {
 			isa = PBXGroup;
 			children = (
-				D172B92F1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft.png */,
-				D172B9301DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft@2x.png */,
-				D172B9311DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected.png */,
-				D172B9321DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png */,
-				D172B9331DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight.png */,
-				D172B9341DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight@2x.png */,
-				D172B9351DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected.png */,
-				D172B9361DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected@2x.png */,
-				D172B9371DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton.png */,
-				D172B9381DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton@2x.png */,
+				F288179226F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected@2x.png */,
+				F288179326F47B0B00670017 /* IDMPhotoBrowser_customDoneButton.png */,
+				F288179426F47B0B00670017 /* IDMPhotoBrowser_customArrowRight.png */,
+				F288179526F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft.png */,
+				F288179626F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft@2x.png */,
+				F288179726F47B0B00670017 /* IDMPhotoBrowser_customArrowRight@2x.png */,
+				F288179826F47B0B00670017 /* IDMPhotoBrowser_customDoneButton@2x.png */,
+				F288179926F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png */,
+				F288179A26F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected.png */,
+				F288179B26F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected.png */,
 			);
 			name = "Custom Images";
-			path = PhotoBrowserDemo/CustomImages;
+			path = "PhotoBrowserDemo/Custom Images";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,8 +328,6 @@
 				4C6F978914AF734800F8389A /* Sources */,
 				4C6F978A14AF734800F8389A /* Frameworks */,
 				4C6F978B14AF734800F8389A /* Resources */,
-				64D1E44DFBE2976FB9C75718 /* [CP] Embed Pods Frameworks */,
-				F88445D630091F1AA9A2F89A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -363,7 +362,7 @@
 		4C6F978414AF734800F8389A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					4C6F978C14AF734800F8389A = {
 						LastSwiftMigration = 0810;
@@ -380,6 +379,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				fr,
 				pt,
@@ -400,31 +400,31 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D172B93C1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png in Resources */,
+				F288179C26F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */,
 				4C6F97D314AF760500F8389A /* photo1l.jpg in Resources */,
 				D17F79ED1AB7C29600A65B37 /* Images.xcassets in Resources */,
-				D172B9411DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton.png in Resources */,
 				4C6F97D414AF760500F8389A /* photo1m.jpg in Resources */,
 				4C6F97D514AF760500F8389A /* photo2l.jpg in Resources */,
 				4C6F97D614AF760500F8389A /* photo2m.jpg in Resources */,
+				F28817A526F47B0B00670017 /* IDMPhotoBrowser_customArrowRightSelected.png in Resources */,
+				F28817A226F47B0B00670017 /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */,
+				F28817A426F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */,
 				4C6F97D714AF760500F8389A /* photo3l.jpg in Resources */,
+				F28817A026F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */,
 				4C6F97D814AF760500F8389A /* photo3m.jpg in Resources */,
-				D172B93B1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */,
 				4C6F97D914AF760500F8389A /* photo4l.jpg in Resources */,
-				D172B93E1DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */,
+				F28817A326F47B0B00670017 /* IDMPhotoBrowser_customArrowLeftSelected@2x.png in Resources */,
+				F28817A126F47B0B00670017 /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */,
 				4C6F97DA14AF760500F8389A /* photo4m.jpg in Resources */,
 				D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */,
-				D172B93A1DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */,
+				F288179F26F47B0B00670017 /* IDMPhotoBrowser_customArrowLeft.png in Resources */,
 				D1574971178DB95300B0211A /* README.markdown in Resources */,
 				D1574972178DB95300B0211A /* LICENSE.txt in Resources */,
-				D172B9421DF396E300F56D69 /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */,
+				F288179D26F47B0B00670017 /* IDMPhotoBrowser_customDoneButton.png in Resources */,
+				F288179E26F47B0B00670017 /* IDMPhotoBrowser_customArrowRight.png in Resources */,
 				D114BB411A32269C00E677FE /* Launch Screen.xib in Resources */,
 				727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */,
-				D172B9391DF396E300F56D69 /* IDMPhotoBrowser_customArrowLeft.png in Resources */,
-				D172B93D1DF396E300F56D69 /* IDMPhotoBrowser_customArrowRight.png in Resources */,
 				727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */,
-				D172B93F1DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected.png in Resources */,
-				D172B9401DF396E300F56D69 /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,49 +438,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		64D1E44DFBE2976FB9C75718 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9FEC6B6CD1E66BC894CF44FA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PhotoBrowserDemo-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F88445D630091F1AA9A2F89A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -527,12 +500,21 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -558,7 +540,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 3.0.1;
@@ -571,12 +553,21 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -594,9 +585,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 3.0.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -615,13 +607,13 @@
 				GCC_PREFIX_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "PhotoBrowserDemo/PhotoBrowserDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.appkraft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0.1;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../**";
 				WRAPPER_EXTENSION = app;
@@ -640,12 +632,12 @@
 				GCC_PREFIX_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "PhotoBrowserDemo/PhotoBrowserDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.appkraft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Bridging-Header.h";
-				SWIFT_VERSION = 3.0.1;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../**";
 				WRAPPER_EXTENSION = app;
@@ -681,7 +673,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = PhotoBrowserDemoTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.appkraft.PhotoBrowserDemoTests;
@@ -722,7 +714,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = PhotoBrowserDemoTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.appkraft.PhotoBrowserDemoTests;

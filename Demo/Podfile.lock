@@ -10,11 +10,17 @@ DEPENDENCIES:
   - pop
   - SDWebImage
 
+SPEC REPOS:
+  trunk:
+    - DACircularProgress
+    - pop
+    - SDWebImage
+
 SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
 
-PODFILE CHECKSUM: 7c9b8bb160246eb04b56feab0ec4a8fb149d5fa3
+PODFILE CHECKSUM: c6bf4c8a201f11304f35d333cc3002246731ced2
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.11.1
