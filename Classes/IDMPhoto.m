@@ -36,6 +36,7 @@
 // Properties
 @synthesize underlyingImage = _underlyingImage, 
 photoURL = _photoURL,
+videoURL = _videoURL,
 caption = _caption;
 
 #pragma mark Class Methods
@@ -95,6 +96,27 @@ caption = _caption;
     return photos;
 }
 
++ (IDMPhoto *)videoWithURL:(NSURL *)url {
+    return [[IDMPhoto alloc] initWithVideoURL:url];
+}
+
++ (NSArray *)videosWithURLs:(NSArray *)urlsArray {
+    NSMutableArray *videos = [NSMutableArray arrayWithCapacity:urlsArray.count];
+
+    for (id url in urlsArray) {
+        if ([url isKindOfClass:[NSURL class]]) {
+            IDMPhoto *video = [IDMPhoto videoWithURL:[NSURL URLWithString:url]];
+            [videos addObject:video];
+        }
+        else if ([url isKindOfClass:[NSString class]]) {
+            IDMPhoto *video = [IDMPhoto videoWithURL:[NSURL URLWithString:url]];
+            [videos addObject:video];
+        }
+    }
+
+    return videos;
+}
+
 #pragma mark NSObject
 
 - (id)initWithImage:(UIImage *)image {
@@ -116,6 +138,13 @@ caption = _caption;
 		_photoURL = [url copy];
 	}
 	return self;
+}
+
+- (id)initWithVideoURL:(NSURL *)videoURL {
+    if ((self = [super init])) {
+        self.videoURL = videoURL;
+    }
+    return self;
 }
 
 #pragma mark IDMPhoto Protocol Methods
