@@ -20,11 +20,14 @@
 typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
 
 // Properties
+@property (nonatomic, readonly) MediaType type;
 @property (nonatomic, strong) NSString *caption;
 @property (nonatomic, strong) NSURL *photoURL;
 @property (nonatomic, strong) NSURL *videoURL;
+@property (nonatomic, strong) NSURL *videoThumbnailURL;
 @property (nonatomic, strong) IDMProgressUpdateBlock progressUpdateBlock;
 @property (nonatomic, strong) UIImage *placeholderImage;
+@property (nonatomic, strong) UIImage *failureImage;
 
 // Class
 + (IDMPhoto *)photoWithImage:(UIImage *)image;

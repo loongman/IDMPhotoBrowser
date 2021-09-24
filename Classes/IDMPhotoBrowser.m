@@ -1419,8 +1419,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_delegate willDisappearPhotoBrowser:self];
     }
 
+    IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
+    [scrollView stopVideo];
+
     if ([self shouldShowAnimation] && (_currentPageIndex == _initialPageIndex)) {
-        IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
     else {

@@ -221,14 +221,18 @@ extension MenuViewController {
 
                 photos = photosWithURL
             } else if indexPath.row == 3 { // Videos
-                let video1 = IDMPhoto(videoURL: URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!)!
+                let video1 = IDMPhoto(videoURL: URL(string: "http://vjs.zencdn.net/v/oceans.mp4")!)!
                 video1.caption = "Big Buck Bunny — by THE PEACH OPEN MOVIE PROJECT"
+                video1.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
+                video1.failureImage = UIImage(named: "photo1m.jpg")
 
                 let photo1 = IDMPhoto(url: URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!)!
                 photo1.caption = "A standard picture separating two videos"
 
-                let video2 = IDMPhoto(videoURL: URL(string: "https://staging.coverr.co/s3/mp4/Playful.mp4")!)!
+                let video2 = IDMPhoto(videoURL: URL(string: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!)!
                 video2.caption = "A cover coming straight from coverr.co for an example"
+                video2.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
+                video1.failureImage = UIImage(named: "photo3m.jpg")
 
                 let videos: [IDMPhoto] = [
                     video1,

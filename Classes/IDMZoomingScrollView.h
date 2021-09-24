@@ -31,7 +31,7 @@
 }
 
 @property (nonatomic, strong) IDMTapDetectingImageView *photoImageView;
-@property (nonatomic, strong) IDMTapDetectingView *videoPlayerView;
+@property (nonatomic, strong) IDMTapDetectingImageView *videoPlayerView;
 @property (nonatomic, strong) AVPlayerLayer *videoPlayerLayer;
 @property (nonatomic, strong) IDMCaptionView *captionView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
@@ -43,5 +43,6 @@
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo;
 - (void)setMaxMinZoomScalesForCurrentBounds;
 - (void)prepareForReuse;
+- (void)stopVideo;
 
 @end

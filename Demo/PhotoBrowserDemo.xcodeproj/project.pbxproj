@@ -92,7 +92,6 @@
 		7D2B79BF1FD25B7600F2094F /* PhotoBrowserDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoBrowserDemoTests.m; sourceTree = "<group>"; };
 		7D2B79C11FD25B7600F2094F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7D2B79C71FD25BF300F2094F /* IDMUtilsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IDMUtilsTest.m; sourceTree = "<group>"; };
-		7D7D666A1E09D6DA00410A67 /* IDMPhotoDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPhotoDataSource.h; sourceTree = "<group>"; };
 		D00FA320EEACA8C835D9D626 /* Pods-PhotoBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
 		D114BB401A32269C00E677FE /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
@@ -284,7 +283,6 @@
 				D1574954178DB94900B0211A /* IDMPhotoBrowser.m */,
 				7D2B79B61FD2501200F2094F /* IDMUtils.h */,
 				7D2B79B71FD2501200F2094F /* IDMUtils.m */,
-				7D7D666A1E09D6DA00410A67 /* IDMPhotoDataSource.h */,
 				D1574955178DB94900B0211A /* IDMPhotoProtocol.h */,
 				D1574956178DB94900B0211A /* IDMTapDetectingImageView.h */,
 				D1574957178DB94900B0211A /* IDMTapDetectingImageView.m */,

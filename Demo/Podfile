@@ -3,7 +3,7 @@ inhibit_all_warnings!
 
 target "PhotoBrowserDemo" do
 
-pod 'SDWebImage'
+pod 'SDWebImage', '~> 5.11.1'
 pod 'DACircularProgress'
 pod 'pop'
 

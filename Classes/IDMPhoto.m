@@ -20,6 +20,7 @@
     // Other
     NSString *_caption;
     BOOL _loadingInProgress;
+    MediaType _type;
 }
 
 // Properties
@@ -37,7 +38,8 @@
 @synthesize underlyingImage = _underlyingImage, 
 photoURL = _photoURL,
 videoURL = _videoURL,
-caption = _caption;
+caption = _caption,
+type = _type;
 
 #pragma mark Class Methods
 
@@ -121,7 +123,8 @@ caption = _caption;
 
 - (id)initWithImage:(UIImage *)image {
 	if ((self = [super init])) {
-		self.underlyingImage = image;
+		_underlyingImage = image;
+        _type = kMediaTypeImage;
 	}
 	return self;
 }
@@ -129,6 +132,7 @@ caption = _caption;
 - (id)initWithFilePath:(NSString *)path {
 	if ((self = [super init])) {
 		_photoPath = [path copy];
+        _type = kMediaTypeImage;
 	}
 	return self;
 }
@@ -136,13 +140,15 @@ caption = _caption;
 - (id)initWithURL:(NSURL *)url {
 	if ((self = [super init])) {
 		_photoURL = [url copy];
+        _type = kMediaTypeImage;
 	}
 	return self;
 }
 
 - (id)initWithVideoURL:(NSURL *)videoURL {
     if ((self = [super init])) {
-        self.videoURL = videoURL;
+        _videoURL = videoURL;
+        _type = kMediaTypeVideo;
     }
     return self;
 }

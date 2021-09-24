@@ -9,6 +9,7 @@
 #import "IDMZoomingScrollView.h"
 #import "IDMPhotoBrowser.h"
 #import "IDMPhoto.h"
+#import <SDWebImage/SDWebImage.h>
 
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
@@ -28,7 +29,12 @@
 
 @implementation IDMZoomingScrollView
 
-@synthesize photoImageView = _photoImageView, videoPlayerView = _videoPlayerView, videoPlayerLayer = _videoPlayerLayer, photoBrowser = _photoBrowser, photo = _photo, captionView = _captionView;
+@synthesize photoImageView = _photoImageView,
+videoPlayerView = _videoPlayerView,
+videoPlayerLayer = _videoPlayerLayer,
+photoBrowser = _photoBrowser,
+photo = _photo,
+captionView = _captionView;
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser {
     if ((self = [super init])) {
@@ -43,10 +49,11 @@
 		[self addSubview:_tapView];
 
         // Video
-        _videoPlayerView = [[IDMTapDetectingView alloc] initWithFrame:self.bounds];
+        _videoPlayerView = [[IDMTapDetectingImageView alloc] initWithFrame:self.bounds];
         _videoPlayerView.tapDelegate = self;
         _videoPlayerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _videoPlayerView.backgroundColor = [UIColor clearColor];
+        _videoPlayerView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_videoPlayerView];
 
         _videoPlayerLayer = [[AVPlayerLayer alloc] init];
@@ -115,12 +122,17 @@
 - (void)prepareForReuse {
     [_progressView setProgress:0 animated:NO];
     [_progressView setIndeterminate:NO];
-    [_videoPlayerLayer.player removeObserver:self forKeyPath:@"status" context:nil];
-    [_videoPlayerLayer.player pause];
-    _videoPlayerLayer.player = NULL;
+
+    [self stopVideo];
+
     self.photo = nil;
     [_captionView removeFromSuperview];
     self.captionView = nil;
+}
+
+- (void)stopVideo {
+    [_videoPlayerLayer.player pause];
+    _videoPlayerLayer.player = NULL;
 }
 
 #pragma mark - Drag & Drop
@@ -140,69 +152,85 @@
 		self.zoomScale = 1;
         
 		self.contentSize = CGSizeMake(0, 0);
-		
-		// Get image from browser as it handles ordering of fetching
-		UIImage *img = [self.photoBrowser imageForPhoto:_photo];
-		if (img) {
-            // Hide video
-            _videoPlayerView.hidden = YES;
 
-            // Hide ProgressView
-            //_progressView.alpha = 0.0f;
-            [_progressView removeFromSuperview];
-            
-            // Set image
-			_photoImageView.image = img;
-			_photoImageView.hidden = NO;
-            
-            // Setup photo frame
-			CGRect photoImageViewFrame;
-			photoImageViewFrame.origin = CGPointZero;
-			photoImageViewFrame.size = img.size;
-            
-			_photoImageView.frame = photoImageViewFrame;
-			self.contentSize = photoImageViewFrame.size;
+        switch (_photo.type) {
+            case kMediaTypeImage:
+                [self showImage];
+                break;
 
-			// Set zoom to minimum zoom
-			[self setMaxMinZoomScalesForCurrentBounds];
-        } else if (_photo.videoURL != NULL) {
-            // Hide ProgressView
-            //_progressView.alpha = 0.0f;
-            [_progressView setProgress:0.3 animated:YES];
-            [_progressView setIndeterminateDuration:0.7f];
-            [_progressView setIndeterminate:YES];
-
-            _photoImageView.hidden = YES;
-            _videoPlayerView.hidden = NO;
-
-            [_videoPlayerLayer.player pause];
-            _videoPlayerLayer.player = NULL;
-            AVPlayer *player = [AVPlayer playerWithURL:_photo.videoURL];
-            [_videoPlayerLayer setPlayer:player];
-
-            [player seekToTime:kCMTimeZero];
-            [player play];
-
-            [player addObserver:self forKeyPath:@"status" options:0 context:nil];
-        } else {
-			// Hide image view
-			_photoImageView.hidden = YES;
-            
-            _progressView.alpha = 1.0f;
-		}
+            case kMediaTypeVideo:
+                [self showVideo];
+                break;
+        }
 
 		[self setNeedsLayout];
 	}
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == _videoPlayerLayer.player && [keyPath isEqualToString:@"status"]) {
-        if (_videoPlayerLayer.player.status == AVPlayerStatusReadyToPlay) {
-            [_progressView removeFromSuperview];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+- (void)showImage {
+    UIImage *img = [_photoBrowser imageForPhoto:_photo] ?: _photo.failureImage;
+    if (img) {
+        // Hide video
+        _videoPlayerView.hidden = YES;
+
+        // Hide ProgressView
+        //_progressView.alpha = 0.0f;
+        [_progressView removeFromSuperview];
+
+        // Set image
+        _photoImageView.image = img;
+        _photoImageView.hidden = NO;
+        _photoImageView.contentMode = UIViewContentModeScaleToFill;
+
+        // Setup photo frame
+        CGRect photoImageViewFrame;
+        photoImageViewFrame.origin = CGPointZero;
+        photoImageViewFrame.size = img.size;
+
+        _photoImageView.frame = photoImageViewFrame;
+        self.contentSize = photoImageViewFrame.size;
+
+        // Set zoom to minimum zoom
+        [self setMaxMinZoomScalesForCurrentBounds];
     }
+}
+
+- (void)showVideo {
+    _photoImageView.hidden = YES;
+    _videoPlayerView.hidden = NO;
+    _videoPlayerLayer.hidden = YES;
+
+    if (_photo.videoURL == NULL) {
+        [_progressView removeFromSuperview];
+        _videoPlayerView.image = _photo.failureImage;
+        _videoPlayerView.contentMode = UIViewContentModeCenter;
+        return;
+   }
+
+    [_progressView setProgress:0.3 animated:YES];
+    [_progressView setIndeterminateDuration:0.7f];
+    [_progressView setIndeterminate:YES];
+
+    _videoPlayerView.contentMode = UIViewContentModeScaleAspectFit;
+    [_videoPlayerView sd_setImageWithURL:((IDMPhoto *)_photo).videoThumbnailURL];
+
+    [_videoPlayerLayer.player pause];
+    _videoPlayerLayer.player = NULL;
+    AVPlayer *player = [AVPlayer playerWithURL:_photo.videoURL];
+    [_videoPlayerLayer setPlayer:player];
+
+    [player seekToTime:kCMTimeZero];
+    [player play];
+
+    __weak id weakSelf = self;
+    [player addBoundaryTimeObserverForTimes:@[[NSValue valueWithCMTime:CMTimeMake(1, 60)]]
+                                      queue:nil
+                                 usingBlock:^{
+        __strong IDMZoomingScrollView *strongSelf = weakSelf;
+        [strongSelf->_progressView removeFromSuperview];
+        strongSelf.videoPlayerView.image = nil;
+        strongSelf.videoPlayerLayer.hidden = NO;
+    }];
 }
 
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo {

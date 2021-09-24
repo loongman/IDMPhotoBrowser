@@ -20,9 +20,15 @@
 //
 // You can see the IDMPhoto class for an example implementation of this protocol
 //
+typedef NS_ENUM(NSUInteger, MediaType) {
+    kMediaTypeImage,
+    kMediaTypeVideo
+};
+
 @protocol IDMPhoto <NSObject>
 
 @required
+- (MediaType)type;
 
 // Return underlying UIImage to be displayed
 // Return nil if the image is not immediately available (loaded into memory, preferably 
@@ -34,6 +40,7 @@
 - (UIImage *)underlyingImage;
 
 - (NSURL *)videoURL;
+- (NSURL *)videoThumbnailURL;
 
 // Called when the browser has determined the underlying images is not
 // already loaded into memory but needs it.
@@ -62,5 +69,7 @@
 // Return placeholder UIImage to be displayed while loading underlyingImage
 // Return nil if there is no placeholder
 - (UIImage *)placeholderImage;
+
+- (UIImage *)failureImage;
 
 @end
