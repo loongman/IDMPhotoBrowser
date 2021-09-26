@@ -232,12 +232,24 @@ extension MenuViewController {
                 let video2 = IDMPhoto(videoURL: URL(string: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!)!
                 video2.caption = "A cover coming straight from coverr.co for an example"
                 video2.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
-                video1.failureImage = UIImage(named: "photo3m.jpg")
+                video2.failureImage = UIImage(named: "photo3m.jpg")
+
+                let video3 = IDMPhoto(videoURL: URL(string: "https://dev.spond.com/storage/video/122863E2382B693E0B2702A27579E8D9/stream.m3u8")!)!
+                video3.caption = "A cover coming straight from coverr.co for an example"
+                video3.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
+                video3.failureImage = UIImage(named: "photo4m.jpg")
+
+                let video4 = IDMPhoto(videoURL: URL(string: "https://dev.spond.com/storage/video/1ECA36B273D5B69C5C0E2D5B4CA9DB86/stream.m3u8")!)!
+                video4.caption = "A cover coming straight from coverr.co for an example"
+                video4.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
+                video4.failureImage = UIImage(named: "photo2m.jpg")
 
                 let videos: [IDMPhoto] = [
                     video1,
                     photo1,
-                    video2
+                    video2,
+                    video3,
+                    video4
                 ]
 
                 photos = videos
@@ -246,12 +258,17 @@ extension MenuViewController {
 
 		// Create and setup browser
 		let browser = IDMPhotoBrowser(photos: photos)
+        browser?.displayActionButton = true
+        browser?.displayArrowButton = false
+        browser?.usePopAnimation = true
+        browser?.useWhiteBackgroundColor = false
+        browser?.displayDoneButton = true
+
 		browser?.delegate = self
 
 		if indexPath.section == 1 { // Multiple photos
 			if indexPath.row == 1 || indexPath.row == 3 { // Photos from Flickr
 				browser?.displayCounterLabel = true
-				browser?.displayActionButton = false
 			} else if indexPath.row == 2 { // Photos from Flickr - Custom
 				browser?.actionButtonTitles      = ["Option 1", "Option 2", "Option 3", "Option 4"]
 				browser?.displayCounterLabel     = true

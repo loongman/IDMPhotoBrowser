@@ -32,13 +32,13 @@
 
 @property (nonatomic, strong) IDMTapDetectingImageView *photoImageView;
 @property (nonatomic, strong) IDMTapDetectingImageView *videoPlayerView;
-@property (nonatomic, strong) AVPlayerLayer *videoPlayerLayer;
+@property (nonatomic, strong) AVPlayerViewController *playerController;
 @property (nonatomic, strong) IDMCaptionView *captionView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
 @property (nonatomic) CGFloat maximumDoubleTapZoomScale;
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser;
-- (void)displayImage;
+- (void)displayMedia;
 - (void)displayImageFailure;
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo;
 - (void)setMaxMinZoomScalesForCurrentBounds;

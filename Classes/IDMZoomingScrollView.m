@@ -11,12 +11,15 @@
 #import "IDMPhoto.h"
 #import <SDWebImage/SDWebImage.h>
 
+enum {
+    kVideoWindowVertivalInset = 50
+};
+
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
 - (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
 - (void)cancelControlHiding;
 - (void)hideControlsAfterDelay;
-//- (void)toggleControls;
 - (void)handleSingleTap;
 @end
 
@@ -31,7 +34,6 @@
 
 @synthesize photoImageView = _photoImageView,
 videoPlayerView = _videoPlayerView,
-videoPlayerLayer = _videoPlayerLayer,
 photoBrowser = _photoBrowser,
 photo = _photo,
 captionView = _captionView;
@@ -56,11 +58,10 @@ captionView = _captionView;
         _videoPlayerView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_videoPlayerView];
 
-        _videoPlayerLayer = [[AVPlayerLayer alloc] init];
-        _videoPlayerLayer.backgroundColor = [UIColor clearColor].CGColor;
-        [_videoPlayerLayer setFrame:_videoPlayerView.bounds];
-        [_videoPlayerLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
-        [_videoPlayerView.layer addSublayer:_videoPlayerLayer];
+        self.playerController = [[AVPlayerViewController alloc] init];
+        self.playerController.view.hidden = YES;
+        _playerController.videoGravity = AVLayerVideoGravityResizeAspect;
+        [_videoPlayerView addSubview:_playerController.view];
 
 		// Image view
 		_photoImageView = [[IDMTapDetectingImageView alloc] initWithFrame:CGRectZero];
@@ -116,7 +117,7 @@ captionView = _captionView;
     if (_photo != photo) {
         _photo = photo;
     }
-    [self displayImage];
+    [self displayMedia];
 }
 
 - (void)prepareForReuse {
@@ -131,8 +132,9 @@ captionView = _captionView;
 }
 
 - (void)stopVideo {
-    [_videoPlayerLayer.player pause];
-    _videoPlayerLayer.player = NULL;
+    [_playerController.player pause];
+    _playerController.player = nil;
+    _playerController.view.hidden = YES;
 }
 
 #pragma mark - Drag & Drop
@@ -144,7 +146,7 @@ captionView = _captionView;
 #pragma mark - Image
 
 // Get and display image
-- (void)displayImage {
+- (void)displayMedia {
 	if (_photo) {
 		// Reset
 		self.maximumZoomScale = 1;
@@ -198,39 +200,17 @@ captionView = _captionView;
 - (void)showVideo {
     _photoImageView.hidden = YES;
     _videoPlayerView.hidden = NO;
-    _videoPlayerLayer.hidden = YES;
+    [_progressView removeFromSuperview];
 
-    if (_photo.videoURL == NULL) {
-        [_progressView removeFromSuperview];
+    if (_photo.videoURL == nil) {
         _videoPlayerView.image = _photo.failureImage;
         _videoPlayerView.contentMode = UIViewContentModeCenter;
         return;
    }
 
-    [_progressView setProgress:0.3 animated:YES];
-    [_progressView setIndeterminateDuration:0.7f];
-    [_progressView setIndeterminate:YES];
-
-    _videoPlayerView.contentMode = UIViewContentModeScaleAspectFit;
-    [_videoPlayerView sd_setImageWithURL:((IDMPhoto *)_photo).videoThumbnailURL];
-
-    [_videoPlayerLayer.player pause];
-    _videoPlayerLayer.player = NULL;
-    AVPlayer *player = [AVPlayer playerWithURL:_photo.videoURL];
-    [_videoPlayerLayer setPlayer:player];
-
-    [player seekToTime:kCMTimeZero];
-    [player play];
-
-    __weak id weakSelf = self;
-    [player addBoundaryTimeObserverForTimes:@[[NSValue valueWithCMTime:CMTimeMake(1, 60)]]
-                                      queue:nil
-                                 usingBlock:^{
-        __strong IDMZoomingScrollView *strongSelf = weakSelf;
-        [strongSelf->_progressView removeFromSuperview];
-        strongSelf.videoPlayerView.image = nil;
-        strongSelf.videoPlayerLayer.hidden = NO;
-    }];
+    _playerController.view.hidden = NO;
+    _playerController.player = [AVPlayer playerWithURL:_photo.videoURL];
+    [_playerController.player play];
 }
 
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo {
@@ -322,9 +302,13 @@ captionView = _captionView;
 	_tapView.frame = self.bounds;
 
     _videoPlayerView.frame = self.bounds;
-    _videoPlayerLayer.frame = _videoPlayerView.bounds;
+    CGRect playerFrame = CGRectInset(_videoPlayerView.bounds, 0, kVideoWindowVertivalInset);
+    if (@available(iOS 11.0, *)) {
+        playerFrame = CGRectInset(playerFrame, 0, self.safeAreaInsets.bottom);
+    }
+    _playerController.view.frame = playerFrame;
 
-	// Super
+    // Super
 	[super layoutSubviews];
     
     // Center the image as it becomes smaller than the size of the screen
@@ -376,7 +360,6 @@ captionView = _captionView;
 #pragma mark - Tap Detection
 
 - (void)handleSingleTap:(CGPoint)touchPoint {
-//	[_photoBrowser performSelector:@selector(toggleControls) withObject:nil afterDelay:0.2];
 	[_photoBrowser performSelector:@selector(handleSingleTap) withObject:nil afterDelay:0.2];
 }
 

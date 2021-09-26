@@ -593,11 +593,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self dismissViewControllerAnimated:animated completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-
-//		if (SYSTEM_VERSION_LESS_THAN(@"8.0"))
-//		{
-//			_applicationTopViewController.modalPresentationStyle = _previousModalPresentationStyle;
-//		}
     }];
 }
 
@@ -815,8 +810,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Video Loop
 
 - (void)playerDidFinishPlaying:(NSNotification *)notification {
-    [[self pageDisplayedAtIndex:_currentPageIndex].videoPlayerLayer.player seekToTime:kCMTimeZero];
-    [[self pageDisplayedAtIndex:_currentPageIndex].videoPlayerLayer.player play];
+    [[self pageDisplayedAtIndex:_currentPageIndex].playerController.player seekToTime:kCMTimeZero];
+    [[self pageDisplayedAtIndex:_currentPageIndex].playerController.player play];
 }
 
 #pragma mark - Status Bar
@@ -1044,7 +1039,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }
         if ([photo underlyingImage]) {
             // Successful load
-            [page displayImage];
+            [page displayMedia];
             [self loadAdjacentPhotosIfNecessary:photo];
         } else {
             // Failed to load
@@ -1103,10 +1098,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 			IDMLog(@"Added page at index %i", index);
 
             // Add caption
-            IDMCaptionView *captionView = [self captionViewForPhotoAtIndex:index];
-            captionView.frame = [self frameForCaptionView:captionView atIndex:index];
-            [_pagingScrollView addSubview:captionView];
-            page.captionView = captionView;
+            id <IDMPhoto> media = [self photoAtIndex:index];
+            if (media.type == kMediaTypeImage) {
+                IDMCaptionView *captionView = [self captionViewForPhotoAtIndex:index];
+                captionView.frame = [self frameForCaptionView:captionView atIndex:index];
+                [_pagingScrollView addSubview:captionView];
+                page.captionView = captionView;
+            }
 		}
 	}
 }
@@ -1177,7 +1175,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGRect frame = self.view.bounds;
     frame.origin.x -= PADDING;
     frame.size.width += (2 * PADDING);
-    frame = [self adjustForSafeArea:frame adjustForStatusBar:false];
     return frame;
 }
 
@@ -1432,56 +1429,63 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)actionButtonPressed:(id)sender {
-    id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    if ([self numberOfPhotos] == 0) { return; }
 
-    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
-        if(!_actionButtonTitles)
-        {
-            // Activity view
-            NSMutableArray *activityItems = [NSMutableArray arrayWithObject:[photo underlyingImage]];
-            if (photo.caption) [activityItems addObject:photo.caption];
-
-            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-
-            __typeof__(self) __weak selfBlock = self;
-
-			[self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-				[selfBlock hideControlsAfterDelay];
-				selfBlock.activityViewController = nil;
-			}];
-
-			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-				[self presentViewController:self.activityViewController animated:YES completion:nil];
-			}
-			else { // iPad
-				UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:self.activityViewController];
-				[popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/4, 0, 0)
-										 inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny
-									   animated:YES];
-			}
-        }
-        else
-        {
-            // Action sheet
-            self.actionsSheet = [UIActionSheet new];
-            self.actionsSheet.delegate = self;
-            for(NSString *action in _actionButtonTitles) {
-                [self.actionsSheet addButtonWithTitle:action];
-            }
-
-            self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:IDMPhotoBrowserLocalizedStrings(@"Cancel")];
-            self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-				[_actionsSheet showInView:self.view];
-            } else {
-                [_actionsSheet showFromBarButtonItem:sender animated:YES];
-            }
+    if (_actionButtonTitles) {
+        // Action sheet
+        self.actionsSheet = [UIActionSheet new];
+        self.actionsSheet.delegate = self;
+        for(NSString *action in _actionButtonTitles) {
+            [self.actionsSheet addButtonWithTitle:action];
         }
 
-        // Keep controls hidden
-        [self setControlsHidden:NO animated:YES permanent:YES];
+        self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:IDMPhotoBrowserLocalizedStrings(@"Cancel")];
+        self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [_actionsSheet showInView:self.view];
+        } else {
+            [_actionsSheet showFromBarButtonItem:sender animated:YES];
+        }
+        return;
     }
+
+    id <IDMPhoto> media = [self photoAtIndex:_currentPageIndex];
+    UIImage *imageContent = [media underlyingImage];
+    NSURL *videoURL = [media videoURL];
+
+    if (imageContent == nil && videoURL == nil) { return; }
+
+    // Activity view
+    NSMutableArray *activityItems = [NSMutableArray arrayWithCapacity:2];
+    if (imageContent) {
+        [activityItems addObject:imageContent];
+    } else if (videoURL) {
+        [activityItems addObject:videoURL];
+    }
+    if (media.caption) [activityItems addObject:media.caption];
+
+    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+
+    __typeof__(self) __weak selfBlock = self;
+
+    [self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        [selfBlock hideControlsAfterDelay];
+        selfBlock.activityViewController = nil;
+    }];
+
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self presentViewController:self.activityViewController animated:YES completion:nil];
+    }
+    else { // iPad
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:self.activityViewController];
+        [popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/4, 0, 0)
+                                 inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny
+                               animated:YES];
+    }
+
+    // Keep controls hidden
+    [self setControlsHidden:NO animated:YES permanent:YES];
 }
 
 #pragma mark - Action Sheet Delegate
