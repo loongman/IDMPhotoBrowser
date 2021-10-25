@@ -41,6 +41,7 @@ typedef NS_ENUM(NSUInteger, MediaType) {
 
 - (NSURL *)videoURL;
 - (NSURL *)videoThumbnailURL;
+- (UIImage *)videoThumbnail;
 
 // Called when the browser has determined the underlying images is not
 // already loaded into memory but needs it.
@@ -70,6 +71,6 @@ typedef NS_ENUM(NSUInteger, MediaType) {
 // Return nil if there is no placeholder
 - (UIImage *)placeholderImage;
 
-- (UIImage *)failureImage;
+- (UIImage *)failureIcon;
 
 @end

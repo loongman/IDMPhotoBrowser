@@ -26,6 +26,9 @@ enum {
 // Private methods and properties
 @interface IDMZoomingScrollView ()
 @property (nonatomic, weak) IDMPhotoBrowser *photoBrowser;
+@property (nonatomic, strong) IDMTapDetectingImageView *videoFailureIndicator;
+@property (nonatomic, strong) UIButton *playButton;
+
 - (void)handleSingleTap:(CGPoint)touchPoint;
 - (void)handleDoubleTap:(CGPoint)touchPoint;
 @end
@@ -57,6 +60,24 @@ captionView = _captionView;
         _videoPlayerView.backgroundColor = [UIColor clearColor];
         _videoPlayerView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_videoPlayerView];
+
+        _videoFailureIndicator = [[IDMTapDetectingImageView alloc] initWithFrame:self.bounds];
+        _videoFailureIndicator.tapDelegate = self;
+        _videoFailureIndicator.contentMode = UIViewContentModeCenter;
+        _videoFailureIndicator.backgroundColor = [UIColor clearColor];
+        _videoFailureIndicator.hidden = YES;
+        [self addSubview:_videoFailureIndicator];
+
+        _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _playButton.hidden = YES;
+        _playButton.adjustsImageWhenHighlighted = NO;
+        [_playButton setImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icon_play"]
+                     forState:UIControlStateNormal];
+        [_playButton sizeToFit];
+        [_playButton addTarget:self
+                        action:@selector(onPlayButtonClicked:)
+              forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_playButton];
 
         self.playerController = [[AVPlayerViewController alloc] init];
         self.playerController.view.hidden = YES;
@@ -135,6 +156,7 @@ captionView = _captionView;
     [_playerController.player pause];
     _playerController.player = nil;
     _playerController.view.hidden = YES;
+    [_playerController removeFromParentViewController];
 }
 
 #pragma mark - Drag & Drop
@@ -170,10 +192,12 @@ captionView = _captionView;
 }
 
 - (void)showImage {
-    UIImage *img = [_photoBrowser imageForPhoto:_photo] ?: _photo.failureImage;
+    UIImage *img = [_photoBrowser imageForPhoto:_photo] ?: _photo.failureIcon;
     if (img) {
         // Hide video
         _videoPlayerView.hidden = YES;
+        _videoFailureIndicator.hidden = YES;
+        _playButton.hidden = YES;
 
         // Hide ProgressView
         //_progressView.alpha = 0.0f;
@@ -199,18 +223,29 @@ captionView = _captionView;
 
 - (void)showVideo {
     _photoImageView.hidden = YES;
+    _videoFailureIndicator.hidden = YES;
+    _playButton.hidden = YES;
     _videoPlayerView.hidden = NO;
     [_progressView removeFromSuperview];
 
-    if (_photo.videoURL == nil) {
-        _videoPlayerView.image = _photo.failureImage;
-        _videoPlayerView.contentMode = UIViewContentModeCenter;
-        return;
-   }
+    if (_photo.videoThumbnail != nil) {
+        _videoPlayerView.image = _photo.videoThumbnail;
+    } else if (_photo.videoThumbnailURL != nil) {
+        [_videoPlayerView sd_setImageWithURL:_photo.videoThumbnailURL];
+    }
 
-    _playerController.view.hidden = NO;
-    _playerController.player = [AVPlayer playerWithURL:_photo.videoURL];
-    [_playerController.player play];
+    if (_photo.videoURL == nil) {
+        _videoFailureIndicator.hidden = NO;
+        _videoFailureIndicator.image = _photo.failureIcon;
+    } else {
+        _playButton.hidden = NO;
+    }
+
+//    _playerController.view.hidden = NO;
+//    _playerController.player = [AVPlayer playerWithURL:_photo.videoURL];
+//    _playerController.entersFullScreenWhenPlaybackBegins = YES;
+//    _playerController.exitsFullScreenWhenPlaybackEnds = YES;
+//    [_playerController.player play];
 }
 
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo {
@@ -307,6 +342,8 @@ captionView = _captionView;
         playerFrame = CGRectInset(playerFrame, 0, self.safeAreaInsets.bottom);
     }
     _playerController.view.frame = playerFrame;
+    _videoFailureIndicator.frame = _videoPlayerView.frame;
+    _playButton.center = _videoPlayerView.center;
 
     // Super
 	[super layoutSubviews];
@@ -360,7 +397,8 @@ captionView = _captionView;
 #pragma mark - Tap Detection
 
 - (void)handleSingleTap:(CGPoint)touchPoint {
-	[_photoBrowser performSelector:@selector(handleSingleTap) withObject:nil afterDelay:0.2];
+    [_photoBrowser performSelector:@selector(handleSingleTap:)
+                        withObject:_photo];
 }
 
 - (void)handleDoubleTap:(CGPoint)touchPoint {
@@ -386,6 +424,10 @@ captionView = _captionView;
 	
 	// Delay controls
 	[_photoBrowser hideControlsAfterDelay];
+}
+
+- (void)onPlayButtonClicked:(UIButton *)sender {
+    [_photoBrowser performSelector:@selector(handlePlayVideo:) withObject:_photo];
 }
 
 // Image View

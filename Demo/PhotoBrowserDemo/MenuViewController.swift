@@ -221,10 +221,11 @@ extension MenuViewController {
 
                 photos = photosWithURL
             } else if indexPath.row == 3 { // Videos
-                let video1 = IDMPhoto(videoURL: URL(string: "http://vjs.zencdn.net/v/oceans.mp4")!)!
+                let video1 = IDMPhoto(videoURL: nil)!//URL(string: "http://vjs.zencdn.net/v/oceans.mp4")!)!
                 video1.caption = "Big Buck Bunny — by THE PEACH OPEN MOVIE PROJECT"
+                video1.videoThumbnail = UIImage(named: "photo1m.jpg")
                 video1.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
-                video1.failureImage = UIImage(named: "photo1m.jpg")
+                video1.failureIcon = UIImage(named: "IDMPhotoBrowser_customDoneButton")
 
                 let photo1 = IDMPhoto(url: URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!)!
                 photo1.caption = "A standard picture separating two videos"
@@ -232,17 +233,17 @@ extension MenuViewController {
                 let video2 = IDMPhoto(videoURL: URL(string: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!)!
                 video2.caption = "A cover coming straight from coverr.co for an example"
                 video2.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
-                video2.failureImage = UIImage(named: "photo3m.jpg")
+                video2.failureIcon = UIImage(named: "photo3m.jpg")
 
                 let video3 = IDMPhoto(videoURL: URL(string: "https://dev.spond.com/storage/video/122863E2382B693E0B2702A27579E8D9/stream.m3u8")!)!
                 video3.caption = "A cover coming straight from coverr.co for an example"
                 video3.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
-                video3.failureImage = UIImage(named: "photo4m.jpg")
+                video3.failureIcon = UIImage(named: "photo4m.jpg")
 
                 let video4 = IDMPhoto(videoURL: URL(string: "https://dev.spond.com/storage/video/1ECA36B273D5B69C5C0E2D5B4CA9DB86/stream.m3u8")!)!
                 video4.caption = "A cover coming straight from coverr.co for an example"
                 video4.videoThumbnailURL = URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!;
-                video4.failureImage = UIImage(named: "photo2m.jpg")
+                video4.failureIcon = UIImage(named: "photo2m.jpg")
 
                 let videos: [IDMPhoto] = [
                     video1,
@@ -263,6 +264,9 @@ extension MenuViewController {
         browser?.usePopAnimation = true
         browser?.useWhiteBackgroundColor = false
         browser?.displayDoneButton = true
+        browser?.didTapFailureVideoBlock = { index in
+            print("\(index)")
+        }
 
 		browser?.delegate = self
 
@@ -294,6 +298,9 @@ extension MenuViewController {
 // MARK: IDMPhotoBrowser Delegate
 
 extension MenuViewController {
+    func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didTapFailureVideoAt index: UInt) {
+        print("Did tap Failure Video at index: \(index)")
+    }
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didShowPhotoAt index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
 		print("Did show photoBrowser with photo index: \(index), photo caption: \(photo.caption!)")

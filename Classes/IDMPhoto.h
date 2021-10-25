@@ -24,10 +24,11 @@ typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
 @property (nonatomic, strong) NSString *caption;
 @property (nonatomic, strong) NSURL *photoURL;
 @property (nonatomic, strong) NSURL *videoURL;
+@property (nonatomic, strong) UIImage *videoThumbnail;
 @property (nonatomic, strong) NSURL *videoThumbnailURL;
 @property (nonatomic, strong) IDMProgressUpdateBlock progressUpdateBlock;
 @property (nonatomic, strong) UIImage *placeholderImage;
-@property (nonatomic, strong) UIImage *failureImage;
+@property (nonatomic, strong) UIImage *failureIcon;
 
 // Class
 + (IDMPhoto *)photoWithImage:(UIImage *)image;

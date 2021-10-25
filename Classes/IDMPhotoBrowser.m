@@ -79,6 +79,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// iOS 7
     UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
+
+    AVPlayerViewController *_currentAVPlayer;
 }
 
 // Private Properties
@@ -275,6 +277,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
+}
+
+- (NSTimeInterval)currentVideoDuration {
+    if (!_currentAVPlayer) { return 0; }
+    if (CMTIME_IS_INDEFINITE(_currentAVPlayer.player.currentItem.duration)) { return 0; }
+    return CMTimeGetSeconds(_currentAVPlayer.player.currentItem.duration);
 }
 
 #pragma mark - Pan Gesture
@@ -754,17 +762,34 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    // Update
-    [self reloadData];
+    if (self.isBeingPresented) {
+        // Update
+        [self reloadData];
+
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+        [[AVAudioSession sharedInstance] setActive:YES error:nil];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(playerDidFinishPlaying:)
+                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                   object:NULL];
+    } else {
+        if (_currentAVPlayer != nil) {
+            [_currentAVPlayer.player removeObserver:self forKeyPath:@"timeControlStatus"];
+            [_currentAVPlayer.player pause];
+            _currentAVPlayer = nil;
+
+            if (self.videoDidEndPlayingBlock) {
+                self.videoDidEndPlayingBlock(_currentPageIndex);
+            }
+
+            _currentVideoReachedEnd = NO;
+        }
+    }
 
     if ([_delegate respondsToSelector:@selector(willAppearPhotoBrowser:)]) {
         [_delegate willAppearPhotoBrowser:self];
     }
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerDidFinishPlaying:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:NULL];
 
     // Super
 	[super viewWillAppear:animated];
@@ -785,9 +810,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AVPlayerItemDidPlayToEndTimeNotification
-                                                  object:NULL];
+    if (self.isBeingDismissed) {
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+        [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    }
 
     // Super
     [super viewWillDisappear:animated];
@@ -805,13 +831,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _nextButton = nil;
 
     [super viewDidUnload];
-}
-
-#pragma mark - Video Loop
-
-- (void)playerDidFinishPlaying:(NSNotification *)notification {
-    [[self pageDisplayedAtIndex:_currentPageIndex].playerController.player seekToTime:kCMTimeZero];
-    [[self pageDisplayedAtIndex:_currentPageIndex].playerController.player play];
 }
 
 #pragma mark - Status Bar
@@ -879,7 +898,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	// Adjust contentOffset to preserve page location based on values collected prior to location
 	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:indexPriorToLayout];
-	[self didStartViewingPageAtIndex:_currentPageIndex]; // initial
+    if (self.isBeingPresented) {
+        [self didStartViewingPageAtIndex:_currentPageIndex]; // initial
+    }
 
 	// Reset
 	_currentPageIndex = indexPriorToLayout;
@@ -1167,6 +1188,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if ([_delegate respondsToSelector:@selector(photoBrowser:didShowPhotoAtIndex:)]) {
         [_delegate photoBrowser:self didShowPhotoAtIndex:index];
     }
+
+    if (currentPhoto.type == kMediaTypeVideo) {
+        IDMZoomingScrollView *view = [self pageDisplayedAtIndex:index];
+        if (self.isBeingPresented) {
+            view.hidden = YES;
+        }
+        [self addChildViewController:view.playerController];
+
+        __weak IDMZoomingScrollView *weakView = view;
+        [self presentAVPlayerWithVideo:currentPhoto animated:!self.isBeingPresented completion:^{
+            weakView.hidden = NO;
+        }];
+    }
 }
 
 #pragma mark - Frame Calculations
@@ -1229,9 +1263,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
     CGRect pageFrame = [self frameForPageAtIndex:index];
-
+    CGFloat safeAreaHeight = 0;
+    if (@available(iOS 11.0, *)) {
+        safeAreaHeight = [UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
+    }
     CGSize captionSize = [captionView sizeThatFits:CGSizeMake(pageFrame.size.width, 0)];
-    CGRect captionFrame = CGRectMake(pageFrame.origin.x, pageFrame.size.height - captionSize.height - (_toolbar.superview?_toolbar.frame.size.height:0), pageFrame.size.width, captionSize.height);
+    CGRect captionFrame = CGRectMake(pageFrame.origin.x, pageFrame.size.height - captionSize.height - (_toolbar.superview?_toolbar.frame.size.height:0) - safeAreaHeight, pageFrame.size.width, captionSize.height);
 
     return captionFrame;
 }
@@ -1383,14 +1420,93 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 		[self setControlsHidden:YES animated:YES permanent:NO];
 	}
 }
-- (void)handleSingleTap {
-	if (_dismissOnTouch) {
-		[self doneButtonPressed:nil];
-	} else {
-		[self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO];
-	}
+- (void)handleSingleTap:(IDMPhoto *)media {
+    if (_dismissOnTouch) {
+        [self doneButtonPressed:nil];
+    } else {
+        [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO];
+    }
+
+    if (media == nil || media.type == kMediaTypeImage || media.videoURL != nil) { return; }
+
+    if ([_delegate respondsToSelector:@selector(photoBrowser:didTapFailureVideoAtIndex:)]) {
+        [_delegate photoBrowser:self didTapFailureVideoAtIndex:_currentPageIndex];
+    }
+
+    if (_didTapFailureVideoBlock) {
+        _didTapFailureVideoBlock(_currentPageIndex);
+    }
 }
 
+- (void)handlePlayVideo:(IDMPhoto *)media {
+    [self presentAVPlayerWithVideo:media animated:YES completion:nil];
+}
+
+- (void)presentAVPlayerWithVideo:(IDMPhoto *)video animated:(BOOL)animated completion:(void (^)(void))completion {
+    if (_pagingScrollView.isDecelerating) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self presentAVPlayerWithVideo:video animated:animated completion:completion];
+        });
+        return;
+    }
+
+    if (video.type == kMediaTypeImage || video.videoURL == nil || _currentAVPlayer != nil) {
+        return;
+    }
+
+    AVPlayer *player = [AVPlayer playerWithPlayerItem:[AVPlayerItem playerItemWithURL:video.videoURL]];
+    _currentAVPlayer = [[AVPlayerViewController alloc] init];
+    if (@available(iOS 11.0, *)) {
+        _currentAVPlayer.entersFullScreenWhenPlaybackBegins = YES;
+    }
+    _currentAVPlayer.player = player;
+    _currentAVPlayer.videoGravity = AVLayerVideoGravityResizeAspect;
+
+    [player addObserver:self
+             forKeyPath:@"timeControlStatus"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
+
+    [self presentViewController:_currentAVPlayer animated:animated completion:^{
+        [player play];
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
+#pragma mark - Video Loop
+
+- (void)playerDidFinishPlaying:(NSNotification *)notification {
+    _currentVideoReachedEnd = YES;
+    [_currentAVPlayer.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object != _currentAVPlayer.player) { return; }
+
+    if ([keyPath isEqualToString:@"timeControlStatus"]) {
+            AVPlayerTimeControlStatus status = [change[NSKeyValueChangeNewKey] integerValue];
+            switch (status) {
+                case AVPlayerTimeControlStatusPaused:
+                    if (self.videoDidPausedBlock) {
+                        self.videoDidPausedBlock(_currentPageIndex);
+                    }
+                    break;
+
+                case AVPlayerTimeControlStatusPlaying:
+                    if (self.videoDidStartPlayingBlock) {
+                        self.videoDidStartPlayingBlock(_currentPageIndex);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+    }
+}
 
 #pragma mark - Properties
 

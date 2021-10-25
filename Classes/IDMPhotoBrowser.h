@@ -20,6 +20,7 @@
 @optional
 - (void)willAppearPhotoBrowser:(IDMPhotoBrowser *)photoBrowser;
 - (void)willDisappearPhotoBrowser:(IDMPhotoBrowser *)photoBrowser;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didTapFailureVideoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
@@ -78,6 +79,14 @@
 
 // animation time (default .28)
 @property (nonatomic) float animationDuration;
+
+@property (nonatomic, readonly) NSTimeInterval currentVideoDuration;
+@property (nonatomic, readonly) BOOL currentVideoReachedEnd;
+// Block
+@property (nonatomic, copy) void (^didTapFailureVideoBlock) (NSUInteger);
+@property (nonatomic, copy) void (^videoDidStartPlayingBlock) (NSUInteger);
+@property (nonatomic, copy) void (^videoDidPausedBlock) (NSUInteger);
+@property (nonatomic, copy) void (^videoDidEndPlayingBlock) (NSUInteger);
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
