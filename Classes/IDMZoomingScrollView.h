@@ -17,6 +17,8 @@
 
 @class IDMPhotoBrowser, IDMPhoto, IDMCaptionView;
 
+AVF_EXPORT NSString *const PlayerFrameDidChangeNotification;
+
 @interface IDMZoomingScrollView : UIScrollView <UIScrollViewDelegate, IDMTapDetectingImageViewDelegate, IDMTapDetectingViewDelegate, UIDragInteractionDelegate> {
 	
 	IDMPhotoBrowser *__weak _photoBrowser;

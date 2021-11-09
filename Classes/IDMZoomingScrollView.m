@@ -15,6 +15,8 @@ enum {
     kVideoWindowVertivalInset = 50
 };
 
+NSString *const PlayerFrameDidChangeNotification = @"PlayerFrameDidChangeNotification";
+
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
 - (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
@@ -28,6 +30,9 @@ enum {
 @property (nonatomic, weak) IDMPhotoBrowser *photoBrowser;
 @property (nonatomic, strong) IDMTapDetectingImageView *videoFailureIndicator;
 @property (nonatomic, strong) UIButton *playButton;
+
+@property (nonatomic, assign) BOOL videoReachedEnd;
+@property (nonatomic, assign) NSTimeInterval videoDuration;
 
 - (void)handleSingleTap:(CGPoint)touchPoint;
 - (void)handleDoubleTap:(CGPoint)touchPoint;
@@ -133,6 +138,12 @@ captionView = _captionView;
     return self;
 }
 
+- (NSTimeInterval)currentVideoDuration {
+    if (!CMTIME_IS_VALID(_playerController.player.currentItem.duration)) { return 0; }
+    if (CMTIME_IS_INDEFINITE(_playerController.player.currentItem.duration)) { return 0; }
+    return CMTimeGetSeconds(_playerController.player.currentItem.duration);
+}
+
 - (void)setPhoto:(id<IDMPhoto>)photo {
     _photoImageView.image = nil; // Release image
     if (_photo != photo) {
@@ -150,13 +161,6 @@ captionView = _captionView;
     self.photo = nil;
     [_captionView removeFromSuperview];
     self.captionView = nil;
-}
-
-- (void)stopVideo {
-    [_playerController.player pause];
-    _playerController.player = nil;
-    _playerController.view.hidden = YES;
-    [_playerController removeFromParentViewController];
 }
 
 #pragma mark - Drag & Drop
@@ -221,33 +225,6 @@ captionView = _captionView;
     }
 }
 
-- (void)showVideo {
-    _photoImageView.hidden = YES;
-    _videoFailureIndicator.hidden = YES;
-    _playButton.hidden = YES;
-    _videoPlayerView.hidden = NO;
-    [_progressView removeFromSuperview];
-
-    if (_photo.videoThumbnail != nil) {
-        _videoPlayerView.image = _photo.videoThumbnail;
-    } else if (_photo.videoThumbnailURL != nil) {
-        [_videoPlayerView sd_setImageWithURL:_photo.videoThumbnailURL];
-    }
-
-    if (_photo.videoURL == nil) {
-        _videoFailureIndicator.hidden = NO;
-        _videoFailureIndicator.image = _photo.failureIcon;
-    } else {
-        _playButton.hidden = NO;
-    }
-
-//    _playerController.view.hidden = NO;
-//    _playerController.player = [AVPlayer playerWithURL:_photo.videoURL];
-//    _playerController.entersFullScreenWhenPlaybackBegins = YES;
-//    _playerController.exitsFullScreenWhenPlaybackEnds = YES;
-//    [_playerController.player play];
-}
-
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo {
     IDMPhoto *p = (IDMPhoto*)self.photo;
 
@@ -261,6 +238,66 @@ captionView = _captionView;
 // Image failed so just show black!
 - (void)displayImageFailure {
     [_progressView removeFromSuperview];
+}
+
+#pragma mark - video
+
+- (void)showVideo {
+    _photoImageView.hidden = YES;
+    _videoFailureIndicator.hidden = YES;
+    _playButton.hidden = YES;
+    _videoPlayerView.hidden = NO;
+    [_progressView removeFromSuperview];
+
+    if (_photo.videoURL == nil) {
+        if (_photo.videoThumbnail != nil) {
+            _videoPlayerView.image = _photo.videoThumbnail;
+        } else if (_photo.videoThumbnailURL != nil) {
+            [_videoPlayerView sd_setImageWithURL:_photo.videoThumbnailURL];
+        }
+
+        _videoFailureIndicator.hidden = NO;
+        _videoFailureIndicator.image = _photo.failureIcon;
+        return;
+    }
+
+    [self startVideo];
+}
+
+- (void)startVideo {
+    _playerController.view.hidden = NO;
+    _videoDuration = 0;
+    _videoReachedEnd = NO;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerDidFinishPlaying:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:NULL];
+
+    AVPlayer *player = [AVPlayer playerWithURL:_photo.videoURL];
+    [player addObserver:self
+             forKeyPath:@"timeControlStatus"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
+
+    _playerController.player = player;
+    [_playerController.player play];
+}
+
+- (void)stopVideo {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [_playerController.player removeObserver:self forKeyPath:@"timeControlStatus"];
+    [_playerController.player pause];
+    _playerController.player = nil;
+    _playerController.view.hidden = YES;
+
+    [_photoBrowser performSelector:@selector(handleVideoDidEndPlaying:finishedVideo:)
+                        withObject:_photo
+                        withObject:@(_videoReachedEnd)];
+
+    [_playerController removeFromParentViewController];
+    _videoReachedEnd = NO;
+    _videoDuration = 0;
 }
 
 #pragma mark - Setup
@@ -335,40 +372,95 @@ captionView = _captionView;
 - (void)layoutSubviews {
 	// Update tap view frame
 	_tapView.frame = self.bounds;
-
     _videoPlayerView.frame = self.bounds;
-    CGRect playerFrame = CGRectInset(_videoPlayerView.bounds, 0, kVideoWindowVertivalInset);
-    if (@available(iOS 11.0, *)) {
-        playerFrame = CGRectInset(playerFrame, 0, self.safeAreaInsets.bottom);
+
+    if (self.bounds.size.width < self.bounds.size.height) {
+        CGRect playerFrame = CGRectInset(_videoPlayerView.bounds, 0, kVideoWindowVertivalInset);
+        if (@available(iOS 11.0, *)) {
+            playerFrame = CGRectInset(playerFrame, 0, self.safeAreaInsets.bottom);
+        }
+
+        if (!CGRectEqualToRect(playerFrame, _playerController.view.frame)) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PlayerFrameDidChangeNotification object:nil];
+            _playerController.view.frame = playerFrame;
+        }
+    } else {
+        CGRect playerFrame = self.bounds;
+        if (@available(iOS 11.0, *)) {
+            playerFrame = CGRectInset(playerFrame, self.safeAreaInsets.left, 0);
+        }
+
+        if (!CGRectEqualToRect(playerFrame, _playerController.view.frame)) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PlayerFrameDidChangeNotification object:nil];
+            _playerController.view.frame = playerFrame;
+        }
     }
-    _playerController.view.frame = playerFrame;
+
     _videoFailureIndicator.frame = _videoPlayerView.frame;
     _playButton.center = _videoPlayerView.center;
 
     // Super
 	[super layoutSubviews];
     
+    [self centerView:_photoImageView];
+}
+
+- (void)centerView:(UIView *)view {
     // Center the image as it becomes smaller than the size of the screen
     CGSize boundsSize = self.bounds.size;
-    CGRect frameToCenter = _photoImageView.frame;
-    
+    CGRect frameToCenter = view.frame;
+
     // Horizontally
     if (frameToCenter.size.width < boundsSize.width) {
         frameToCenter.origin.x = floorf((boundsSize.width - frameToCenter.size.width) / 2.0);
-	} else {
+    } else {
         frameToCenter.origin.x = 0;
-	}
-    
+    }
+
     // Vertically
     if (frameToCenter.size.height < boundsSize.height) {
         frameToCenter.origin.y = floorf((boundsSize.height - frameToCenter.size.height) / 2.0);
-	} else {
+    } else {
         frameToCenter.origin.y = 0;
-	}
-    
-	// Center
-	if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
-		_photoImageView.frame = frameToCenter;
+    }
+
+    // Center
+    if (!CGRectEqualToRect(view.frame, frameToCenter)) {
+        view.frame = frameToCenter;
+    }
+}
+
+#pragma mark - Observer
+
+- (void)playerDidFinishPlaying:(NSNotification *)notification {
+    [_playerController.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    _videoReachedEnd = YES;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object != _playerController.player) { return; }
+
+    if ([keyPath isEqualToString:@"timeControlStatus"]) {
+            AVPlayerTimeControlStatus status = [change[NSKeyValueChangeNewKey] integerValue];
+            switch (status) {
+                case AVPlayerTimeControlStatusPaused:
+                    [_photoBrowser performSelector:@selector(handleVideoDidPaused:)
+                                        withObject:_photo];
+                    break;
+
+                case AVPlayerTimeControlStatusPlaying:
+                    if (_videoDuration == 0) {
+                        self.videoDuration = [self currentVideoDuration];
+                    }
+                    [_photoBrowser performSelector:@selector(handleVideoDidStartPlaying:duration:)
+                                        withObject:_photo
+                                        withObject:@(_videoDuration)];
+                    break;
+
+                default:
+                    break;
+            }
+    }
 }
 
 #pragma mark - UIScrollViewDelegate

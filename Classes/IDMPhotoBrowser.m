@@ -79,8 +79,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// iOS 7
     UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
-
-    AVPlayerViewController *_currentAVPlayer;
 }
 
 // Private Properties
@@ -129,6 +127,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 // Interactions
 - (void)handleSingleTap;
+- (void)handleVideoDidStartPlaying:(IDMPhoto *)media duration:(id)duration;
+- (void)handleVideoDidPaused:(IDMPhoto *)media;
+- (void)handleVideoDidEndPlaying:(IDMPhoto *)media finishedVideo:(id)finishedVideo;
+- (void)handlePlayVideo;
 
 // Data
 - (NSUInteger)numberOfPhotos;
@@ -277,12 +279,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-}
-
-- (NSTimeInterval)currentVideoDuration {
-    if (!_currentAVPlayer) { return 0; }
-    if (CMTIME_IS_INDEFINITE(_currentAVPlayer.player.currentItem.duration)) { return 0; }
-    return CMTimeGetSeconds(_currentAVPlayer.player.currentItem.duration);
 }
 
 #pragma mark - Pan Gesture
@@ -744,9 +740,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                                                                                           action:@selector(actionButtonPressed:)]];
     }
     else {
-        _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                  target:self
-                                                                  action:@selector(actionButtonPressed:)];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.contentEdgeInsets = UIEdgeInsetsMake(8, 16, 8, 16);
+        [button setImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icon_action"]
+                forState:UIControlStateNormal];
+        [button addTarget:self
+                   action:@selector(actionButtonPressed:)
+         forControlEvents:UIControlEventTouchUpInside];
+        _actionButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     }
 
     // Gesture
@@ -770,21 +771,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [[AVAudioSession sharedInstance] setActive:YES error:nil];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(playerDidFinishPlaying:)
-                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                 selector:@selector(playerFrameDidChanged:)
+                                                     name:PlayerFrameDidChangeNotification
                                                    object:NULL];
-    } else {
-        if (_currentAVPlayer != nil) {
-            [_currentAVPlayer.player removeObserver:self forKeyPath:@"timeControlStatus"];
-            [_currentAVPlayer.player pause];
-            _currentAVPlayer = nil;
-
-            if (self.videoDidEndPlayingBlock) {
-                self.videoDidEndPlayingBlock(_currentPageIndex);
-            }
-
-            _currentVideoReachedEnd = NO;
-        }
     }
 
     if ([_delegate respondsToSelector:@selector(willAppearPhotoBrowser:)]) {
@@ -806,13 +795,18 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    _viewIsActive = YES;
+
+    if (self.isBeingPresented) {
+        _viewIsActive = YES;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     if (self.isBeingDismissed) {
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
         [[AVAudioSession sharedInstance] setActive:YES error:nil];
+
+        [[UIDevice currentDevice] setValue:@(UIDeviceOrientationPortrait) forKey:@"orientation"];
     }
 
     // Super
@@ -1191,15 +1185,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     if (currentPhoto.type == kMediaTypeVideo) {
         IDMZoomingScrollView *view = [self pageDisplayedAtIndex:index];
-        if (self.isBeingPresented) {
-            view.hidden = YES;
-        }
         [self addChildViewController:view.playerController];
-
-        __weak IDMZoomingScrollView *weakView = view;
-        [self presentAVPlayerWithVideo:currentPhoto animated:!self.isBeingPresented completion:^{
-            weakView.hidden = NO;
-        }];
+        _actionButton.customView.hidden = currentPhoto.videoURL == nil;
+    } else {
+        _actionButton.customView.hidden = NO;
     }
 }
 
@@ -1376,10 +1365,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Hide/show bars
     [UIView animateWithDuration:(animated ? 0.1 : 0) animations:^(void) {
         CGFloat alpha = hidden ? 0 : 1;
+        BOOL isPortrait = self.view.bounds.size.width < self.view.bounds.size.height;
         [self.navigationController.navigationBar setAlpha:alpha];
         [_toolbar setAlpha:alpha];
         [_doneButton setAlpha:alpha];
-        for (UIView *v in captionViews) v.alpha = alpha;
+        for (UIView *v in captionViews) {
+            v.alpha = isPortrait ? alpha : 0;
+        }
     } completion:^(BOOL finished) {}];
 
 	// Control hiding timer
@@ -1438,73 +1430,37 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 }
 
+- (void)handleVideoDidStartPlaying:(IDMPhoto *)media duration:(id)duration {
+    if (self.videoDidStartPlayingBlock) {
+        self.videoDidStartPlayingBlock([_photos indexOfObject:media], [duration doubleValue]);
+    }
+}
+
+- (void)handleVideoDidPaused:(IDMPhoto *)media {
+    if (self.videoDidPausedBlock) {
+        self.videoDidPausedBlock([_photos indexOfObject:media]);
+    }
+}
+
+- (void)handleVideoDidEndPlaying:(IDMPhoto *)media finishedVideo:(id)finishedVideo {
+    if (self.videoDidEndPlayingBlock) {
+        self.videoDidEndPlayingBlock([_photos indexOfObject:media], [finishedVideo boolValue]);
+    }
+}
+
 - (void)handlePlayVideo:(IDMPhoto *)media {
-    [self presentAVPlayerWithVideo:media animated:YES completion:nil];
 }
 
-- (void)presentAVPlayerWithVideo:(IDMPhoto *)video animated:(BOOL)animated completion:(void (^)(void))completion {
-    if (_pagingScrollView.isDecelerating) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self presentAVPlayerWithVideo:video animated:animated completion:completion];
-        });
-        return;
-    }
-
-    if (video.type == kMediaTypeImage || video.videoURL == nil || _currentAVPlayer != nil) {
-        return;
-    }
-
-    AVPlayer *player = [AVPlayer playerWithPlayerItem:[AVPlayerItem playerItemWithURL:video.videoURL]];
-    _currentAVPlayer = [[AVPlayerViewController alloc] init];
-    if (@available(iOS 11.0, *)) {
-        _currentAVPlayer.entersFullScreenWhenPlaybackBegins = YES;
-    }
-    _currentAVPlayer.player = player;
-    _currentAVPlayer.videoGravity = AVLayerVideoGravityResizeAspect;
-
-    [player addObserver:self
-             forKeyPath:@"timeControlStatus"
-                options:NSKeyValueObservingOptionNew
-                context:nil];
-
-    [self presentViewController:_currentAVPlayer animated:animated completion:^{
-        [player play];
-        if (completion) {
-            completion();
-        }
-    }];
-}
-
-#pragma mark - Video Loop
-
-- (void)playerDidFinishPlaying:(NSNotification *)notification {
-    _currentVideoReachedEnd = YES;
-    [_currentAVPlayer.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-}
-
-#pragma mark - KVO
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object != _currentAVPlayer.player) { return; }
-
-    if ([keyPath isEqualToString:@"timeControlStatus"]) {
-            AVPlayerTimeControlStatus status = [change[NSKeyValueChangeNewKey] integerValue];
-            switch (status) {
-                case AVPlayerTimeControlStatusPaused:
-                    if (self.videoDidPausedBlock) {
-                        self.videoDidPausedBlock(_currentPageIndex);
-                    }
-                    break;
-
-                case AVPlayerTimeControlStatusPlaying:
-                    if (self.videoDidStartPlayingBlock) {
-                        self.videoDidStartPlayingBlock(_currentPageIndex);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+- (void)playerFrameDidChanged:(NSNotification *)notification {
+    IDMZoomingScrollView *page = [self pageDisplayedAtIndex:_currentPageIndex];
+    if (page.frame.size.width < page.frame.size.height) {
+        _toolbar.hidden = NO;
+        _doneButton.hidden = NO;
+        page.captionView.alpha = [self areControlsHidden] ? 0 : 1;
+    } else {
+        _toolbar.hidden = YES;
+        _doneButton.hidden = YES;
+        page.captionView.alpha = 0;
     }
 }
 

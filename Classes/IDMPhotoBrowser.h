@@ -80,13 +80,11 @@
 // animation time (default .28)
 @property (nonatomic) float animationDuration;
 
-@property (nonatomic, readonly) NSTimeInterval currentVideoDuration;
-@property (nonatomic, readonly) BOOL currentVideoReachedEnd;
 // Block
 @property (nonatomic, copy) void (^didTapFailureVideoBlock) (NSUInteger);
-@property (nonatomic, copy) void (^videoDidStartPlayingBlock) (NSUInteger);
+@property (nonatomic, copy) void (^videoDidStartPlayingBlock) (NSUInteger, NSTimeInterval);
 @property (nonatomic, copy) void (^videoDidPausedBlock) (NSUInteger);
-@property (nonatomic, copy) void (^videoDidEndPlayingBlock) (NSUInteger);
+@property (nonatomic, copy) void (^videoDidEndPlayingBlock) (NSUInteger, BOOL);
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
