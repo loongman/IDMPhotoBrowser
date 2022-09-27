@@ -68,6 +68,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGFloat _statusBarHeight;
 
     BOOL _isdraggingPhoto;
+    AVAudioSessionCategory _oldAudioSessionCategory;
 
     CGRect _senderViewOriginalFrame;
     //UIImage *_backgroundScreenshot;
@@ -767,9 +768,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         // Update
         [self reloadData];
 
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-        [[AVAudioSession sharedInstance] setActive:YES error:nil];
-
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(playerFrameDidChanged:)
                                                      name:PlayerFrameDidChangeNotification
@@ -803,8 +801,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)viewWillDisappear:(BOOL)animated {
     if (self.isBeingDismissed) {
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
-        [[AVAudioSession sharedInstance] setActive:YES error:nil];
+        if (_oldAudioSessionCategory != nil) {
+            [[AVAudioSession sharedInstance] setCategory:_oldAudioSessionCategory error:nil];
+            [[AVAudioSession sharedInstance] setActive:YES error:nil];
+        }
 
         [[UIDevice currentDevice] setValue:@(UIDeviceOrientationPortrait) forKey:@"orientation"];
     }
@@ -823,6 +823,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _doneButton = nil;
     _previousButton = nil;
     _nextButton = nil;
+    _oldAudioSessionCategory = nil;
 
     [super viewDidUnload];
 }
@@ -1431,6 +1432,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)handleVideoDidStartPlaying:(IDMPhoto *)media duration:(id)duration {
+    if (_oldAudioSessionCategory == nil) {
+        _oldAudioSessionCategory = [[AVAudioSession sharedInstance] category];
+
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+        [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    }
+
     if (self.videoDidStartPlayingBlock) {
         self.videoDidStartPlayingBlock([_photos indexOfObject:media], [duration doubleValue]);
     }
