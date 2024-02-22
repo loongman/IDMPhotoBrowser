@@ -38,6 +38,8 @@
 @synthesize underlyingImage = _underlyingImage, 
 photoURL = _photoURL,
 videoURL = _videoURL,
+vastTag = _vastTag,
+adPlayType = _adPlayType,
 caption = _caption,
 type = _type;
 
@@ -99,24 +101,11 @@ type = _type;
 }
 
 + (IDMPhoto *)videoWithURL:(NSURL *)url {
-    return [[IDMPhoto alloc] initWithVideoURL:url];
+    return [IDMPhoto videoWithURL:url vastTag:nil adPlayType:kIDMVASTAdPlayTypeDefault];
 }
 
-+ (NSArray *)videosWithURLs:(NSArray *)urlsArray {
-    NSMutableArray *videos = [NSMutableArray arrayWithCapacity:urlsArray.count];
-
-    for (id url in urlsArray) {
-        if ([url isKindOfClass:[NSURL class]]) {
-            IDMPhoto *video = [IDMPhoto videoWithURL:[NSURL URLWithString:url]];
-            [videos addObject:video];
-        }
-        else if ([url isKindOfClass:[NSString class]]) {
-            IDMPhoto *video = [IDMPhoto videoWithURL:[NSURL URLWithString:url]];
-            [videos addObject:video];
-        }
-    }
-
-    return videos;
++ (IDMPhoto *)videoWithURL:(NSURL *)url vastTag:(NSString *)vastTag adPlayType:(IDMVASTAdPlayType)adPlayType {
+    return [[IDMPhoto alloc] initWithVideoURL:url vastTag:vastTag adPlayType:adPlayType];
 }
 
 #pragma mark NSObject
@@ -149,6 +138,16 @@ type = _type;
     if ((self = [super init])) {
         _videoURL = videoURL;
         _type = kMediaTypeVideo;
+    }
+    return self;
+}
+
+- (id)initWithVideoURL:(NSURL *)videoURL vastTag:(NSString *)vastTag adPlayType:(IDMVASTAdPlayType)adPlayType {
+    if ((self = [super init])) {
+        _videoURL = videoURL;
+        _type = kMediaTypeVideo;
+        _vastTag = vastTag;
+        _adPlayType = adPlayType;
     }
     return self;
 }

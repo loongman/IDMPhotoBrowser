@@ -1,26 +1,30 @@
 PODS:
   - DACircularProgress (2.3.1)
+  - GoogleAds-IMA-iOS-SDK (3.20.0)
   - pop (1.0.9)
-  - SDWebImage (5.11.1):
-    - SDWebImage/Core (= 5.11.1)
-  - SDWebImage/Core (5.11.1)
+  - SDWebImage (5.18.2):
+    - SDWebImage/Core (= 5.18.2)
+  - SDWebImage/Core (5.18.2)
 
 DEPENDENCIES:
   - DACircularProgress
+  - GoogleAds-IMA-iOS-SDK (= 3.20.0)
   - pop
-  - SDWebImage (~> 5.11.1)
+  - SDWebImage (= 5.18.2)
 
 SPEC REPOS:
   trunk:
     - DACircularProgress
+    - GoogleAds-IMA-iOS-SDK
     - pop
     - SDWebImage
 
 SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
+  GoogleAds-IMA-iOS-SDK: f9a6bd69e34f6c3a2d6b2f7cd56814b78fc680f9
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
-  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
+  SDWebImage: c0de394d7cf7f9838aed1fd6bb6037654a4572e4
 
-PODFILE CHECKSUM: e339e8bf591f3ee05a27bc10c152222275ae8330
+PODFILE CHECKSUM: d067d7db4d8624253c3cee7cedfbc7d4a8c16632
 
-COCOAPODS: 1.11.1
+COCOAPODS: 1.13.0
