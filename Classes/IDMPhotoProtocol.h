@@ -25,6 +25,13 @@ typedef NS_ENUM(NSUInteger, MediaType) {
     kMediaTypeVideo
 };
 
+typedef NS_ENUM(NSUInteger, IDMVASTAdPlayType) {
+    kIDMVASTAdPlayTypePreRoll                   = 0 ,
+    kIDMVASTAdPlayTypeMidRoll,
+    kIDMVASTAdPlayTypePostRoll,
+    kIDMVASTAdPlayTypeDefault                   = kIDMVASTAdPlayTypePostRoll
+};
+
 @protocol IDMPhoto <NSObject>
 
 @required
@@ -42,6 +49,8 @@ typedef NS_ENUM(NSUInteger, MediaType) {
 - (NSURL *)videoURL;
 - (NSURL *)videoThumbnailURL;
 - (UIImage *)videoThumbnail;
+- (NSString *)vastTag;
+- (IDMVASTAdPlayType)adPlayType;
 
 // Called when the browser has determined the underlying images is not
 // already loaded into memory but needs it.
