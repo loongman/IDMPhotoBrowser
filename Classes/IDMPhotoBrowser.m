@@ -13,6 +13,8 @@
 
 #import "pop/POP.h"
 
+@import GoogleInteractiveMediaAds;
+
 enum {
     kFadeViewTag = 4001
 };
@@ -127,11 +129,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (BOOL)areControlsHidden;
 
 // Interactions
-- (void)handleSingleTap;
+- (void)handleSingleTap:(IDMPhoto *)media;
 - (void)handleVideoDidStartPlaying:(IDMPhoto *)media duration:(id)duration;
 - (void)handleVideoDidPaused:(IDMPhoto *)media;
 - (void)handleVideoDidEndPlaying:(IDMPhoto *)media finishedVideo:(id)finishedVideo;
-- (void)handlePlayVideo;
+- (void)handlePlayVideo:(IDMPhoto *)media;
 
 // Data
 - (NSUInteger)numberOfPhotos;
@@ -1187,6 +1189,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if (currentPhoto.type == kMediaTypeVideo) {
         IDMZoomingScrollView *view = [self pageDisplayedAtIndex:index];
         [self addChildViewController:view.playerController];
+        [view didAddPlayerControllerToPhotoBrowser];
         _actionButton.customView.hidden = currentPhoto.videoURL == nil;
     } else {
         _actionButton.customView.hidden = NO;

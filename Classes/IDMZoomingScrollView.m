@@ -11,11 +11,24 @@
 #import "IDMPhoto.h"
 #import <SDWebImage/SDWebImage.h>
 
+@import GoogleInteractiveMediaAds;
+
 enum {
     kVideoWindowVertivalInset = 50
 };
 
+typedef NS_ENUM(NSUInteger, IDMVASTAdState) {
+    kIDMVASTAdStateNone                   = 0,
+    kIDMVASTAdStateLoaded,
+    kIDMVASTAdStateCompleted,
+    kIDMVASTAdStateSkipped
+};
+
 NSString *const PlayerFrameDidChangeNotification = @"PlayerFrameDidChangeNotification";
+
+// An object that requests ads and handles events from ads request responses.
+// You should only instantiate one ads loader, which can be reused throughout the life of the application.
+static IMAAdsLoader *adsLoader = NULL;
 
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
@@ -26,13 +39,19 @@ NSString *const PlayerFrameDidChangeNotification = @"PlayerFrameDidChangeNotific
 @end
 
 // Private methods and properties
-@interface IDMZoomingScrollView ()
+@interface IDMZoomingScrollView () <IMAAdsLoaderDelegate,
+                                    IMAAdsManagerDelegate>
+
 @property (nonatomic, weak) IDMPhotoBrowser *photoBrowser;
 @property (nonatomic, strong) IDMTapDetectingImageView *videoFailureIndicator;
 @property (nonatomic, strong) UIButton *playButton;
 
 @property (nonatomic, assign) BOOL videoReachedEnd;
 @property (nonatomic, assign) NSTimeInterval videoDuration;
+
+@property (nonatomic, strong) IMAAVPlayerContentPlayhead *contentPlayhead;
+@property (nonatomic, strong) IMAAdsManager *adsManager;
+@property (nonatomic, assign) IDMVASTAdState adState;
 
 - (void)handleSingleTap:(CGPoint)touchPoint;
 - (void)handleDoubleTap:(CGPoint)touchPoint;
@@ -171,7 +190,7 @@ captionView = _captionView;
 
 #pragma mark - Image
 
-// Get and display image
+// Get and display media
 - (void)displayMedia {
 	if (_photo) {
 		// Reset
@@ -240,7 +259,7 @@ captionView = _captionView;
     [_progressView removeFromSuperview];
 }
 
-#pragma mark - video
+#pragma mark - Video
 
 - (void)showVideo {
     _photoImageView.hidden = YES;
@@ -270,7 +289,7 @@ captionView = _captionView;
     _videoReachedEnd = NO;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerDidFinishPlaying:)
+                                             selector:@selector(contentDidFinishPlaying:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:NULL];
 
@@ -281,6 +300,9 @@ captionView = _captionView;
                 context:nil];
 
     _playerController.player = player;
+
+    [self prepareVideoAdIfNeeded];
+
     [_playerController.player play];
 }
 
@@ -298,6 +320,104 @@ captionView = _captionView;
     [_playerController removeFromParentViewController];
     _videoReachedEnd = NO;
     _videoDuration = 0;
+
+    [self resetVideoAdIfNeeded];
+}
+
+#pragma mark - Video Ad
+- (void)prepareVideoAdIfNeeded {
+    if (_photo.vastTag == nil || _playerController.player == nil) {
+        return;
+    }
+
+    if (_contentPlayhead == nil) {
+        _contentPlayhead =
+        [[IMAAVPlayerContentPlayhead alloc] initWithAVPlayer:self.playerController.player];
+    }
+
+    [self setupAdsLoader];
+    [self requestAds];
+}
+
+- (void)resetVideoAdIfNeeded {
+    adsLoader.delegate = nil;
+    _adsManager.delegate = self;
+    _adsManager = nil;
+}
+
+- (void)playVideoAdIfNeeded {
+    if (_photo.vastTag != nil && _contentPlayhead != nil && adsLoader != nil && _adsManager != nil && _adState == kIDMVASTAdStateLoaded) {
+        [_adsManager start];
+    }
+}
+
+- (void)setupAdsLoader {
+    if (adsLoader == nil) {
+        adsLoader = [[IMAAdsLoader alloc] init];
+    }
+
+    adsLoader.delegate = self;
+}
+
+- (void)requestAds {
+    if (_photo.vastTag != nil && adsLoader != nil && _playerController.parentViewController == _photoBrowser) {
+        // Pass the main view as the container for ad display.
+        IMAAdDisplayContainer *adDisplayContainer =
+        [[IMAAdDisplayContainer alloc] initWithAdContainer:_videoPlayerView
+                                            viewController:_photoBrowser];
+        IMAAdsRequest *request = [[IMAAdsRequest alloc] initWithAdTagUrl:_photo.vastTag
+                                                      adDisplayContainer:adDisplayContainer
+                                                         contentPlayhead:self.contentPlayhead
+                                                             userContext:nil];
+        [adsLoader requestAdsWithRequest:request];
+    }
+}
+
+- (void)didAddPlayerControllerToPhotoBrowser {
+    [self requestAds];
+}
+
+#pragma mark - IMAAdsLoaderDelegate
+- (void)adsLoader:(IMAAdsLoader *)loader adsLoadedWithData:(IMAAdsLoadedData *)adsLoadedData {
+    // Initialize and listen to the ads manager loaded for this request.
+    self.adsManager = adsLoadedData.adsManager;
+    self.adsManager.delegate = self;
+    [self.adsManager initializeWithAdsRenderingSettings:nil];
+}
+
+- (void)adsLoader:(IMAAdsLoader *)loader failedWithErrorData:(IMAAdLoadingErrorData *)adErrorData {
+    IDMLog(@"AdsLoader: Error loading ads: %@", adErrorData.adError.message);
+}
+
+#pragma mark - IMAAdsManagerDelegate
+- (void)adsManager:(IMAAdsManager *)adsManager didReceiveAdEvent:(IMAAdEvent *)event {
+    switch (event.type) {
+        case kIMAAdEvent_LOADED:
+            _adState = kIDMVASTAdStateLoaded;
+            break;
+        case kIMAAdEvent_COMPLETE:
+            _adState = kIDMVASTAdStateCompleted;
+            break;
+        case kIMAAdEvent_SKIPPED:
+            _adState = kIDMVASTAdStateSkipped;
+            break;
+        default:
+            break;
+    }
+
+    IDMLog(@"AdsManager didReceiveAdEvent: %@", @(event.type));
+}
+
+- (void)adsManager:(IMAAdsManager *)adsManager didReceiveAdError:(IMAAdError *)error {
+    IDMLog(@"AdsManager error: %@", error.message);
+}
+
+- (void)adsManagerDidRequestContentPause:(IMAAdsManager *)adsManager {
+    IDMLog(@"AdsManager: didRequestContentPause");
+}
+
+- (void)adsManagerDidRequestContentResume:(IMAAdsManager *)adsManager {
+    IDMLog(@"AdsManager: didRequestContentResume");
 }
 
 #pragma mark - Setup
@@ -432,9 +552,11 @@ captionView = _captionView;
 
 #pragma mark - Observer
 
-- (void)playerDidFinishPlaying:(NSNotification *)notification {
+- (void)contentDidFinishPlaying:(NSNotification *)notification {
     [_playerController.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     _videoReachedEnd = YES;
+
+    [self playVideoAdIfNeeded];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

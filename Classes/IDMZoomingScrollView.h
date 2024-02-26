@@ -46,5 +46,6 @@ AVF_EXPORT NSString *const PlayerFrameDidChangeNotification;
 - (void)setMaxMinZoomScalesForCurrentBounds;
 - (void)prepareForReuse;
 - (void)stopVideo;
+- (void)didAddPlayerControllerToPhotoBrowser;
 
 @end
