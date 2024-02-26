@@ -10,6 +10,13 @@
 #import "IDMPhotoProtocol.h"
 #import <SDWebImage/SDWebImageManager.h>
 
+typedef NS_ENUM(NSUInteger, IDMVASTAdPlayType) {
+    kIDMVASTAdPlayTypePreRoll                   = 0 ,
+    kIDMVASTAdPlayTypeMidRoll,
+    kIDMVASTAdPlayTypePostRoll,
+    kIDMVASTAdPlayTypeDefault                   = kIDMVASTAdPlayTypePostRoll
+};
+
 // This class models a photo/image and it's caption
 // If you want to handle photos, caching, decompression
 // yourself then you can simply ensure your custom data model
@@ -26,6 +33,8 @@ typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
 @property (nonatomic, strong) NSURL *videoURL;
 @property (nonatomic, strong) UIImage *videoThumbnail;
 @property (nonatomic, strong) NSURL *videoThumbnailURL;
+@property (nonatomic, readonly) NSString *vastTag; // Optional vast ad tag for video.
+@property (nonatomic, readonly) IDMVASTAdPlayType adPlayType;
 @property (nonatomic, strong) IDMProgressUpdateBlock progressUpdateBlock;
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (nonatomic, strong) UIImage *failureIcon;
@@ -40,8 +49,7 @@ typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
 + (NSArray *)photosWithURLs:(NSArray *)urlsArray;
 
 + (IDMPhoto *)videoWithURL:(NSURL *)url;
-
-+ (NSArray *)videosWithURLs:(NSArray *)urlsArray;
++ (IDMPhoto *)videoWithURL:(NSURL *)url vastTag:(NSString *)vastTag adPlayType:(IDMVASTAdPlayType)adPlayType;
 
 // Init
 - (id)initWithImage:(UIImage *)image;
