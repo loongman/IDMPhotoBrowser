@@ -376,6 +376,14 @@ captionView = _captionView;
     }
 }
 
+- (void)requestNewAdIfNeeded {
+    if (_adState == kIDMVASTAdStateCompleted || _adState == kIDMVASTAdStateSkipped) {
+        _adState = kIDMVASTAdStateNone;
+
+        [self requestAds];
+    }
+}
+
 - (void)didAddPlayerControllerToPhotoBrowser {
     [self requestAds];
 }
@@ -577,9 +585,12 @@ captionView = _captionView;
                     if (_videoDuration == 0) {
                         self.videoDuration = [self currentVideoDuration];
                     }
+
                     [_photoBrowser performSelector:@selector(handleVideoDidStartPlaying:duration:)
                                         withObject:_photo
                                         withObject:@(_videoDuration)];
+
+                    [self requestNewAdIfNeeded];
                     break;
 
                 default:
