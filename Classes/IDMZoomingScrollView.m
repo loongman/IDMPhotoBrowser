@@ -340,8 +340,11 @@ captionView = _captionView;
 }
 
 - (void)resetVideoAdIfNeeded {
-    adsLoader.delegate = nil;
-    _adsManager.delegate = self;
+    // 'adsLoader' is global instance, make sure to not touch it while it is being reuse by other media.
+    if (adsLoader.delegate == self) {
+        adsLoader.delegate = nil;
+    }
+    _adsManager.delegate = nil;
     _adsManager = nil;
 }
 
