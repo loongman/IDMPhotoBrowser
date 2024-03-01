@@ -350,6 +350,9 @@ captionView = _captionView;
 
 - (void)playVideoAdIfNeeded {
     if (_photo.vastTag != nil && _contentPlayhead != nil && adsLoader != nil && _adsManager != nil && _adState == kIDMVASTAdStateLoaded) {
+        float volume = _playerController.player.isMuted ? 0.0 : _playerController.player.volume;
+        [_adsManager setVolume:volume];
+
         [_adsManager start];
     }
 }
