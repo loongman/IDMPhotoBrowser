@@ -20,6 +20,8 @@ enum {
 typedef NS_ENUM(NSUInteger, IDMVASTAdState) {
     kIDMVASTAdStateNone                   = 0,
     kIDMVASTAdStateLoaded,
+    kIDMVASTAdStateStarted,
+    kIDMVASTAdStatePause,
     kIDMVASTAdStateCompleted,
     kIDMVASTAdStateSkipped
 };
@@ -291,7 +293,15 @@ captionView = _captionView;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(contentDidFinishPlaying:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:NULL];
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillResignActive:)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidBecomeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
 
     AVPlayer *player = [AVPlayer playerWithURL:_photo.videoURL];
     [player addObserver:self
@@ -345,6 +355,7 @@ captionView = _captionView;
         adsLoader.delegate = nil;
     }
     _adsManager.delegate = nil;
+    [_adsManager destroy];
     _adsManager = nil;
 }
 
@@ -408,6 +419,12 @@ captionView = _captionView;
     switch (event.type) {
         case kIMAAdEvent_LOADED:
             _adState = kIDMVASTAdStateLoaded;
+            break;
+        case kIMAAdEvent_STARTED:
+            _adState = kIDMVASTAdStateStarted;
+            break;
+        case kIMAAdEvent_PAUSE:
+            _adState = kIDMVASTAdStatePause;
             break;
         case kIMAAdEvent_COMPLETE:
             _adState = kIDMVASTAdStateCompleted;
@@ -565,6 +582,17 @@ captionView = _captionView;
 }
 
 #pragma mark - Observer
+- (void)applicationWillResignActive:(NSNotification *)notification {
+    if (_adState == kIDMVASTAdStateStarted) {
+        [_adsManager pause];
+    }
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
+    if (_adState == kIDMVASTAdStatePause) {
+        [_adsManager resume];
+    }
+}
 
 - (void)contentDidFinishPlaying:(NSNotification *)notification {
     [_playerController.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
