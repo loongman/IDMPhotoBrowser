@@ -424,7 +424,9 @@ captionView = _captionView;
             _adState = kIDMVASTAdStateStarted;
             break;
         case kIMAAdEvent_PAUSE:
-            _adState = kIDMVASTAdStatePause;
+            if (_adState != kIDMVASTAdStateSkipped) { // Ignore 'pause' event after 'Skip ad'.
+                _adState = kIDMVASTAdStatePause;
+            }
             break;
         case kIMAAdEvent_COMPLETE:
             _adState = kIDMVASTAdStateCompleted;
