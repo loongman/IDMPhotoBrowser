@@ -38,6 +38,7 @@ AVF_EXPORT NSString *const PlayerFrameDidChangeNotification;
 @property (nonatomic, strong) IDMCaptionView *captionView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
 @property (nonatomic) CGFloat maximumDoubleTapZoomScale;
+@property (nonatomic, readonly) BOOL oncePlayedVideoAd;
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser;
 - (void)displayMedia;
