@@ -333,6 +333,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                 return;
             }
 
+            // When a video ad is played, the animation effect for view dismissal is not satisfactory.
+            // The root cause remains unclear at this time.
+            // As a temporary solution, we're removing it for now.
+            if (scrollView.oncePlayedVideoAd) {
+                [self doneButtonPressed:nil];
+                return;
+            }
+
             CGFloat finalX = firstX, finalY;
 
             CGFloat windowsHeigt = [_applicationWindow frame].size.height;

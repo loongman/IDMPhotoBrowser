@@ -54,6 +54,7 @@ static IMAAdsLoader *adsLoader = NULL;
 @property (nonatomic, strong) IMAAVPlayerContentPlayhead *contentPlayhead;
 @property (nonatomic, strong) IMAAdsManager *adsManager;
 @property (nonatomic, assign) IDMVASTAdState adState;
+@property (nonatomic, assign) BOOL oncePlayedVideoAd;
 
 - (void)handleSingleTap:(CGPoint)touchPoint;
 - (void)handleDoubleTap:(CGPoint)touchPoint;
@@ -430,9 +431,11 @@ captionView = _captionView;
             break;
         case kIMAAdEvent_COMPLETE:
             _adState = kIDMVASTAdStateCompleted;
+            _oncePlayedVideoAd = YES;
             break;
         case kIMAAdEvent_SKIPPED:
             _adState = kIDMVASTAdStateSkipped;
+            _oncePlayedVideoAd = YES;
             break;
         default:
             break;
