@@ -109,6 +109,13 @@ captionView = _captionView;
         self.playerController = [[AVPlayerViewController alloc] init];
         self.playerController.view.hidden = YES;
         _playerController.videoGravity = AVLayerVideoGravityResizeAspect;
+        _playerController.allowsPictureInPicturePlayback = NO;
+
+        if (@available(iOS 16.0, *)) {
+            _playerController.allowsVideoFrameAnalysis = NO;
+            _playerController.speeds = @[]; // Setting an empty array to hides the playback speed selection user interface.
+        }
+
         [_videoPlayerView addSubview:_playerController.view];
 
 		// Image view
