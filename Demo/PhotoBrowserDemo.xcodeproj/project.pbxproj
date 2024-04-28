@@ -327,6 +327,7 @@
 				4C6F978A14AF734800F8389A /* Frameworks */,
 				4C6F978B14AF734800F8389A /* Resources */,
 				EB6DA076CE324BC68C4E5C18 /* [CP] Embed Pods Frameworks */,
+				922D3088DCD943ECB46AEC0F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -437,6 +438,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		922D3088DCD943ECB46AEC0F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage/SDWebImage.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SDWebImage.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9FEC6B6CD1E66BC894CF44FA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
