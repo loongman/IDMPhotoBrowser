@@ -42,7 +42,8 @@ static IMAAdsLoader *adsLoader = NULL;
 
 // Private methods and properties
 @interface IDMZoomingScrollView () <IMAAdsLoaderDelegate,
-                                    IMAAdsManagerDelegate>
+                                    IMAAdsManagerDelegate,
+                                    AVPlayerViewControllerDelegate>
 
 @property (nonatomic, weak) IDMPhotoBrowser *photoBrowser;
 @property (nonatomic, strong) IDMTapDetectingImageView *videoFailureIndicator;
@@ -55,6 +56,7 @@ static IMAAdsLoader *adsLoader = NULL;
 @property (nonatomic, strong) IMAAdsManager *adsManager;
 @property (nonatomic, assign) IDMVASTAdState adState;
 @property (nonatomic, assign) BOOL oncePlayedVideoAd;
+@property (nonatomic, assign) BOOL isPlayerInFullscreen;
 
 - (void)handleSingleTap:(CGPoint)touchPoint;
 - (void)handleDoubleTap:(CGPoint)touchPoint;
@@ -108,6 +110,7 @@ captionView = _captionView;
 
         self.playerController = [[AVPlayerViewController alloc] init];
         self.playerController.view.hidden = YES;
+        self.playerController.delegate = self;
         _playerController.videoGravity = AVLayerVideoGravityResizeAspect;
         _playerController.allowsPictureInPicturePlayback = NO;
 
@@ -338,6 +341,7 @@ captionView = _captionView;
     [_playerController removeFromParentViewController];
     _videoReachedEnd = NO;
     _videoDuration = 0;
+    _isPlayerInFullscreen = NO;
 
     [self resetVideoAdIfNeeded];
 }
@@ -610,7 +614,15 @@ captionView = _captionView;
     [_playerController.player seekToTime:kCMTimeZero toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     _videoReachedEnd = YES;
 
-    [self playVideoAdIfNeeded];
+    if (!_isPlayerInFullscreen) {
+        [self playVideoAdIfNeeded];
+    }
+    else {
+        // Postpone a short while leaving chance to quit AVFullScreenViewController.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self playVideoAdIfNeeded];
+        });
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -640,6 +652,19 @@ captionView = _captionView;
                     break;
             }
     }
+}
+
+#pragma mark - AVPlayerViewControllerDelegate
+- (void)playerViewController:(AVPlayerViewController *)playerViewController willBeginFullScreenPresentationWithAnimationCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    _isPlayerInFullscreen = YES;
+    playerViewController.exitsFullScreenWhenPlaybackEnds = YES;
+}
+
+- (void)playerViewController:(AVPlayerViewController *)playerViewController willEndFullScreenPresentationWithAnimationCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.isPlayerInFullscreen = NO;
+        playerViewController.exitsFullScreenWhenPlaybackEnds = NO;
+    });
 }
 
 #pragma mark - UIScrollViewDelegate
