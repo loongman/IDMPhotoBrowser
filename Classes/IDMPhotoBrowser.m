@@ -766,8 +766,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_panGesture setMinimumNumberOfTouches:1];
     [_panGesture setMaximumNumberOfTouches:1];
 
-    // Update
-    //[self reloadData];
+    [self hideControlsByDefaultIfNeeded];
 
 	// Super
     [super viewDidLoad];
@@ -1424,6 +1423,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 		[self setControlsHidden:YES animated:YES permanent:NO];
 	}
 }
+
+- (void)hideControlsByDefaultIfNeeded {
+    if ([self photoAtIndex:_currentPageIndex].type == kMediaTypeVideo) {
+        [self setControlsHidden:YES animated:NO permanent:NO];
+    }
+}
+
 - (void)handleSingleTap:(IDMPhoto *)media {
     if (_dismissOnTouch) {
         [self doneButtonPressed:nil];
@@ -1575,7 +1581,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                                animated:YES];
     }
 
-    // Keep controls hidden
+    // Keep controls unhidden
     [self setControlsHidden:NO animated:YES permanent:YES];
 }
 
