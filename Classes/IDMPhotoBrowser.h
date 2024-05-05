@@ -14,6 +14,15 @@
 #import "IDMCaptionView.h"
 #import "IDMTapDetectingImageView.h"
 
+typedef NS_ENUM(NSUInteger, IDMVASTAdState) {
+    kIDMVASTAdStateNone                   = 0,
+    kIDMVASTAdStateLoaded,
+    kIDMVASTAdStateStarted,
+    kIDMVASTAdStatePause,
+    kIDMVASTAdStateCompleted,
+    kIDMVASTAdStateSkipped
+};
+
 // Delgate
 @class IDMPhotoBrowser;
 @protocol IDMPhotoBrowserDelegate <NSObject>
@@ -85,6 +94,8 @@
 @property (nonatomic, copy) void (^videoDidStartPlayingBlock) (NSUInteger, NSTimeInterval);
 @property (nonatomic, copy) void (^videoDidPausedBlock) (NSUInteger);
 @property (nonatomic, copy) void (^videoDidEndPlayingBlock) (NSUInteger, BOOL);
+@property (nonatomic, copy) void (^VASTAdDidRequestBlock) (void);
+@property (nonatomic, copy) void (^VASTAdStateDidUpdateBlock) (IDMVASTAdState);
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;

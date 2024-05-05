@@ -17,15 +17,6 @@ enum {
     kVideoWindowVertivalInset = 50
 };
 
-typedef NS_ENUM(NSUInteger, IDMVASTAdState) {
-    kIDMVASTAdStateNone                   = 0,
-    kIDMVASTAdStateLoaded,
-    kIDMVASTAdStateStarted,
-    kIDMVASTAdStatePause,
-    kIDMVASTAdStateCompleted,
-    kIDMVASTAdStateSkipped
-};
-
 NSString *const PlayerFrameDidChangeNotification = @"PlayerFrameDidChangeNotification";
 
 // An object that requests ads and handles events from ads request responses.
@@ -399,6 +390,10 @@ captionView = _captionView;
                                                          contentPlayhead:self.contentPlayhead
                                                              userContext:nil];
         [adsLoader requestAdsWithRequest:request];
+
+        if (_photoBrowser.VASTAdDidRequestBlock) {
+            _photoBrowser.VASTAdDidRequestBlock();
+        }
     }
 }
 
@@ -412,6 +407,12 @@ captionView = _captionView;
 
 - (void)didAddPlayerControllerToPhotoBrowser {
     [self requestAds];
+}
+
+- (void)didUpdateVASTAdState {
+    if (_photoBrowser.VASTAdStateDidUpdateBlock) {
+        _photoBrowser.VASTAdStateDidUpdateBlock(_adState);
+    }
 }
 
 #pragma mark - IMAAdsLoaderDelegate
@@ -428,6 +429,8 @@ captionView = _captionView;
 
 #pragma mark - IMAAdsManagerDelegate
 - (void)adsManager:(IMAAdsManager *)adsManager didReceiveAdEvent:(IMAAdEvent *)event {
+    IDMVASTAdState prevAdState = _adState;
+
     switch (event.type) {
         case kIMAAdEvent_LOADED:
             _adState = kIDMVASTAdStateLoaded;
@@ -450,6 +453,10 @@ captionView = _captionView;
             break;
         default:
             break;
+    }
+
+    if (_adState != prevAdState) {
+        [self didUpdateVASTAdState];
     }
 
     IDMLog(@"AdsManager didReceiveAdEvent: %@", @(event.type));
