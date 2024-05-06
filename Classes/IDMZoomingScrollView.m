@@ -398,7 +398,9 @@ captionView = _captionView;
 }
 
 - (void)requestNewAdIfNeeded {
-    if (_adState == kIDMVASTAdStateCompleted || _adState == kIDMVASTAdStateSkipped) {
+    // Do not request ads on fullscreen mode, to avoid from error:
+    // 'Ads cannot be requested because the ad container is not attached to the view hierarchy.'
+    if (!_isPlayerInFullscreen && (_adState == kIDMVASTAdStateCompleted || _adState == kIDMVASTAdStateSkipped)) {
         _adState = kIDMVASTAdStateNone;
 
         [self requestAds];
@@ -627,7 +629,20 @@ captionView = _captionView;
     else {
         // Postpone a short while leaving chance to quit AVFullScreenViewController.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self playVideoAdIfNeeded];
+            if (self.adState == kIDMVASTAdStateCompleted || self.adState == kIDMVASTAdStateSkipped) {
+                [self requestNewAdIfNeeded];
+
+                self.userInteractionEnabled = NO;
+                // Postpone a short while leaving chance to request new ad.
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    self.userInteractionEnabled = YES;
+
+                    [self playVideoAdIfNeeded];
+                });
+            }
+            else {
+                [self playVideoAdIfNeeded];
+            }
         });
     }
 }
