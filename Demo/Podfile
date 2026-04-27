@@ -3,9 +3,9 @@ inhibit_all_warnings!
 
 target "PhotoBrowserDemo" do
 
-pod 'SDWebImage', '5.21.0'
+pod 'SDWebImage', '5.21.7'
 pod 'DACircularProgress'
 pod 'pop'
-pod 'GoogleAds-IMA-iOS-SDK', '3.24.0'
+pod 'GoogleAds-IMA-iOS-SDK', '3.31.0'
 
 end
