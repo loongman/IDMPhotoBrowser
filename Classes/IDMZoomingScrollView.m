@@ -9,6 +9,7 @@
 #import "IDMZoomingScrollView.h"
 #import "IDMPhotoBrowser.h"
 #import "IDMPhoto.h"
+#import "IDMUtils.h"
 #import <SDWebImage/SDWebImage.h>
 
 @import GoogleInteractiveMediaAds;
@@ -305,7 +306,20 @@ captionView = _captionView;
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
 
-    AVPlayer *player = [AVPlayer playerWithURL:_photo.videoURL];
+    AVPlayer *player = nil;
+    AVAsset *videoAsset = nil;
+    if ([_photo respondsToSelector:@selector(videoAsset)]) {
+        videoAsset = [_photo videoAsset];
+    }
+    if (videoAsset != nil) {
+        AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:videoAsset];
+        player = [AVPlayer playerWithPlayerItem:item];
+    } else {
+        player = [IDMUtils playerForVideoURL:_photo.videoURL];
+    }
+    if (player == nil) {
+        return;
+    }
     [player addObserver:self
              forKeyPath:@"timeControlStatus"
                 options:NSKeyValueObservingOptionNew
