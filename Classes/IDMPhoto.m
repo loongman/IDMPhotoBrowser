@@ -38,6 +38,7 @@
 @synthesize underlyingImage = _underlyingImage, 
 photoURL = _photoURL,
 videoURL = _videoURL,
+videoAsset = _videoAsset,
 vastTag = _vastTag,
 adPlayType = _adPlayType,
 caption = _caption,

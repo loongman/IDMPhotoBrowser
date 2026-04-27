@@ -24,6 +24,7 @@ typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
 @property (nonatomic, strong) NSString *caption;
 @property (nonatomic, strong) NSURL *photoURL;
 @property (nonatomic, strong) NSURL *videoURL;
+@property (nonatomic, strong) AVAsset *videoAsset;
 @property (nonatomic, strong) UIImage *videoThumbnail;
 @property (nonatomic, strong) NSURL *videoThumbnailURL;
 @property (nonatomic, readonly) NSString *vastTag; // Optional vast ad tag for video.

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 #import "IDMPBConstants.h"
 
 // Name of notification used when a photo has completed loading process
@@ -81,5 +82,9 @@ typedef NS_ENUM(NSUInteger, IDMVASTAdPlayType) {
 - (UIImage *)placeholderImage;
 
 - (UIImage *)failureIcon;
+
+// Optional local asset fallback for video playback.
+// When present, browser uses this AVAsset directly instead of creating a player from videoURL.
+- (AVAsset *)videoAsset;
 
 @end

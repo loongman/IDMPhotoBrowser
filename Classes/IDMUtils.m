@@ -6,8 +6,31 @@
 //
 
 #import "IDMUtils.h"
+#import <AVFoundation/AVFoundation.h>
 
 @implementation IDMUtils
+
++ (AVPlayer *)playerForVideoURL:(NSURL *)url {
+    if (url == nil) {
+        return nil;
+    }
+    if (url.isFileURL) {
+        NSURL *resolvedURL = url;
+        if (url.fragment.length > 0 || url.query.length > 0) {
+            NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+            components.fragment = nil;
+            components.query = nil;
+            if (components.URL != nil) {
+                resolvedURL = components.URL;
+            }
+        }
+        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:resolvedURL options:nil];
+        AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+        return [AVPlayer playerWithPlayerItem:item];
+    }
+    return [AVPlayer playerWithURL:url];
+}
+
 /**
  * Adjust a rect to be moved into a safe area specified by `insets`.
  *
