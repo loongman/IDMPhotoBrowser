@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.resources     =  'Classes/IDMPhotoBrowser.bundle', 'Classes/IDMPBLocalizations.bundle'
   s.framework     =  'MessageUI', 'QuartzCore', 'SystemConfiguration', 'MobileCoreServices', 'Security'
   s.requires_arc  =  true
-  s.dependency       'SDWebImage'
-  s.dependency       'DACircularProgress'
-  s.dependency       'pop'
-  s.dependency       'GoogleAds-IMA-iOS-SDK'
+  s.dependency       'SDWebImage', '>= 5.0'
+  s.dependency       'DACircularProgress', '>= 2.3'
+  s.dependency       'pop', '>= 1.0'
+  s.dependency       'GoogleAds-IMA-iOS-SDK', '>= 3.0'
   end
